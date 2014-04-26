@@ -922,4 +922,183 @@ public class Chromosome extends Object {
         return point;
     }
     
+    /**
+     * <p>
+     * оператор точечной мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Применима только к бинарным хромосомам.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int MT_Pointer() {
+        // позиции гена, который инвертируется
+        int point = (int) (Math.random() * (length - 1));
+        
+        //инвентирование
+        if (data[point].equals('0')) {
+            data[point] = '1';
+        } else {
+            data[point] = '0';
+        }
+        return point;
+    }
+    
+    /**
+     * <p>
+     * одноточечный оператор мутации на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int MT_onePointGold() {
+        // позиция гена, после которой точка разрыва
+        int point = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point];
+        data[point] = data[point+1];
+        data[point+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_twoPointGold() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+        point[1] = Math.round((float)(length - 1) / 1.618f);
+
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * одноточечный оператор мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int MT_onePoint() {
+        // позиция гена, после которой точка разрыва
+        int point = (int) (Math.random() * (length - 1));
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point];
+        data[point] = data[point+1];
+        data[point+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_twoPoint() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = (int) (Math.random() * (length - 1));
+        do {
+            point[1] = (int) (Math.random() * (length - 1));
+        } while (point[0] == point[1]);
+
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+     /**
+     * <p>
+     * одноточечный оператор мутации на основе чисил фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int MT_onePointFibanacci() {
+        // позиция гена, после которой точка разрыва
+        int point = (int) Math.round((float)(length - 1) * 2 / 5);
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point];
+        data[point] = data[point+1];
+        data[point+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации на основе чисил фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_twoPointFibanacci() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) * 2 / 5);
+        point[1] = Math.round((float)(length - 1) * 3 / 5);
+
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * оператор инверсии</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Полностью инвертирует хромосому. </p>
+     *
+     */
+    public void Inversion() {
+        
+        for (int i = 0; i < (int)data.length/2; i++) {
+            Object d = data[i];
+            data[i] = data[data.length-i-1];
+            data[data.length-i-1] = d;
+        }
+    }
+    
 }
