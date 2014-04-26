@@ -804,9 +804,6 @@ public class Chromosome extends Object {
         point[0] = Math.round((float)(length - 1) * 2 / 5);
         point[1] = Math.round((float)(length - 1) * 3 / 5);
         point[2] = Math.round((float)(length - 1)-(float)((length - 1) * 3 / 5)+((float)(length - 1) * 2 / 5));
-        System.out.println(point[0]);
-        System.out.println(point[1]);
-        System.out.println(point[2]);
         // Упорядочиваем точки
         Arrays.sort(point);
 
