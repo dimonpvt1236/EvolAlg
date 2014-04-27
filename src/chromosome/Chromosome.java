@@ -118,7 +118,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_onePoint(Chromosome chr2) {
+    public int OK_PointOne(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return -1;
         }
@@ -145,7 +145,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_twoPoint(Chromosome chr2) {
+    public int[] OK_PointTwo(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -183,7 +183,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_threePoint(Chromosome chr2) {
+    public int[] OK_PointThree(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -226,7 +226,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_serialOnePoint(Chromosome chr2) {
+    public int OK_SerialOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return -1;
         }
@@ -288,7 +288,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точки разрыва
      */
-    public int[] OK_serialtwoPoint(Chromosome chr2) {
+    public int[] OK_serialTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -352,7 +352,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_partialLinkedOnePoint(Chromosome chr2) {
+    public int OK_PartialLinkedOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return -1;
         }
@@ -435,7 +435,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точки разрыва
      */
-    public int[] OK_partialLinkedTwoPoint(Chromosome chr2) {
+    public int[] OK_PartialLinkedTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -637,7 +637,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Маска
      */
-    public int[] OK_universal(Chromosome chr2) {
+    public int[] OK_Universal(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             System.err.println("length is different!");
             return null;
@@ -673,7 +673,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @param mask маска
      */
-    public void OK_universal(Chromosome chr2, int[] mask) {
+    public void OK_Universal(Chromosome chr2, int[] mask) {
 
         //TODO: make algorithm
         if (this.getLength() != chr2.getLength()) {
@@ -732,7 +732,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_onePointFibonacci(Chromosome chr2) {
+    public int OK_FibonacciOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return -1;
         }
@@ -758,7 +758,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_twoPointFibonacci(Chromosome chr2) {
+    public int[] OK_FibonacciTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -794,7 +794,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_threePointFibonacci(Chromosome chr2) {
+    public int[] OK_FibonacciThreePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -832,7 +832,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_onePointGold(Chromosome chr2) {
+    public int OK_GoldOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return -1;
         }
@@ -858,7 +858,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_twoPointGold(Chromosome chr2) {
+    public int[] OK_GoldTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -894,7 +894,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_threePointGold(Chromosome chr2) {
+    public int[] OK_GoldThreePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -952,7 +952,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int MT_onePointGold() {
+    public int MT_GoldOnePoint() {
         // позиция гена, после которой точка разрыва
         int point = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
         
@@ -972,7 +972,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int[] MT_twoPointGold() {
+    public int[] MT_GoldTwoPoint() {
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
         point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
@@ -994,7 +994,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int MT_onePoint() {
+    public int MT_PointOne() {
         // позиция гена, после которой точка разрыва
         int point = (int) (Math.random() * (length - 1));
         
@@ -1014,7 +1014,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int[] MT_twoPoint() {
+    public int[] MT_PointTwo() {
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
         point[0] = (int) (Math.random() * (length - 1));
@@ -1044,7 +1044,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int MT_onePointFibanacci() {
+    public int MT_FibanacciOnePoint() {
         // позиция гена, после которой точка разрыва
         int point = (int) Math.round((float)(length - 1) * 2 / 5);
         
@@ -1064,7 +1064,7 @@ public class Chromosome extends Object {
      *
      * @return Точка разрыва
      */
-    public int[] MT_twoPointFibanacci() {
+    public int[] MT_FibanacciTwoPoint() {
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
         point[0] = Math.round((float)(length - 1) * 2 / 5);
