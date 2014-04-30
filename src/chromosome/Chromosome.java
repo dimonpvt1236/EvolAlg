@@ -118,15 +118,16 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_onePoint(Chromosome chr2) {
+    public int[] OK_PointOne(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
-            return -1;
+            return null;
         }
 
         // позиция гена, после которой точка разрыва
-        int point = (int) (Math.random() * (length - 1));
+        int[] point = new int[1];
+        point[0] = (int) (Math.random() * (length - 1));
 
-        for (int i = point + 1; i < length; i++) {
+        for (int i = point[0] + 1; i < length; i++) {
             //swap
             Object d = data[i];
             data[i] = chr2.data[i];
@@ -145,7 +146,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_twoPoint(Chromosome chr2) {
+    public int[] OK_PointTwo(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -183,7 +184,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Массив точек разрыва
      */
-    public int[] OK_threePoint(Chromosome chr2) {
+    public int[] OK_PointThree(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -226,19 +227,19 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_serialOnePoint(Chromosome chr2) {
+    public int[] OK_SerialOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
-            return -1;
+            return null;
         }
         // позиции гена, после которой точка разрыва
-        int point;
-        point = (int) (Math.random() * (length - 1));
+        int[] point = new int[1];
+        point[0] = (int) (Math.random() * (length - 1));
 
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
 
         for (int i = 0; i < data.length; i++) {
-            if (i <= point) {
+            if (i <= point[0]) {
                 res1[i] = data[i];
                 res2[i] = chr2.data[i];
             } else {
@@ -288,7 +289,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точки разрыва
      */
-    public int[] OK_serialtwoPoint(Chromosome chr2) {
+    public int[] OK_serialTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -352,23 +353,23 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_partialLinkedOnePoint(Chromosome chr2) {
+    public int[] OK_PartialLinkedOnePoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
-            return -1;
+            return null;
         }
         // позиция гена, после которого точка разрыва
-        int point;
-        point = (int) (Math.random() * (length - 1));
+        int[] point = new int [1];
+        point[0] = (int) (Math.random() * (length - 1));
 
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
-        for (int i = point + 1; i < data.length; i++) {
+        for (int i = point[0] + 1; i < data.length; i++) {
             //left part ==>
             res1[i] = chr2.data[i];
             res2[i] = data[i];
 
         }
-        for (int i = 0; i < point + 1; i++) {
+        for (int i = 0; i < point[0] + 1; i++) {
             //right part <==
             //1
             Object curValue1;
@@ -435,7 +436,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точки разрыва
      */
-    public int[] OK_partialLinkedTwoPoint(Chromosome chr2) {
+    public int[] OK_PartialLinkedTwoPoint(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
         }
@@ -572,21 +573,21 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Точка разрыва
      */
-    public int OK_cicle(Chromosome chr2) {
+    public int[] OK_cicle(Chromosome chr2) {
 
         //TODO: make algorithm
         if (this.getLength() != chr2.getLength()) {
-            return -1;
+            return null;
         }
         // позиции гена, после которой точка разрыва
-        int point;
-        point = (int) (Math.random() * (length - 1));
+        int[] point = new int[1];
+        point[0] = (int) (Math.random() * (length - 1));
 
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
 
         for (int i = 0; i < data.length; i++) {
-            if (i <= point) {
+            if (i <= point[0]) {
                 res1[i] = data[i];
                 res2[i] = chr2.data[i];
             } else {
@@ -637,7 +638,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @return Маска
      */
-    public int[] OK_universal(Chromosome chr2) {
+    public int[] OK_Universal(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             System.err.println("length is different!");
             return null;
@@ -673,7 +674,7 @@ public class Chromosome extends Object {
      * @param chr2 вторая хромосома для кроссинговера
      * @param mask маска
      */
-    public void OK_universal(Chromosome chr2, int[] mask) {
+    public void OK_Universal(Chromosome chr2, int[] mask) {
 
         //TODO: make algorithm
         if (this.getLength() != chr2.getLength()) {
@@ -720,6 +721,391 @@ public class Chromosome extends Object {
         
         
         return result;
+    }
+    
+    /**
+     * <p>
+     * одноточечный оператор кроссинговера на основе чисел фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Точка разрыва
+     */
+    public int[] OK_FibonacciOnePoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+        // позиция гена, после которой точка разрыва
+        int[] point = new int[1];
+        point[0] = Math.round((float)(length - 1) * 2 / 5);
+
+        for (int i = point[0] + 1; i < length; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+
+    /**
+     * <p>
+     * двухточечный оператор кроссинговера на основе чисел фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Массив точек разрыва
+     */
+    public int[] OK_FibonacciTwoPoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) * 2 / 5);
+        point[1] = Math.round((float)(length - 1) * 3 / 5);
+        
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+
+        for (int i = point[0] + 1; i <= point[1]; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+
+    /**
+     * <p>
+     * трехточечный оператор кроссинговера на основе чисел фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Массив точек разрыва
+     */
+    public int[] OK_FibonacciThreePoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[3];
+        point[0] = Math.round((float)(length - 1) * 2 / 5);
+        point[1] = Math.round((float)(length - 1) * 3 / 5);
+        point[2] = Math.round((float)(length - 1)-(float)((length - 1) * 3 / 5)+((float)(length - 1) * 2 / 5));
+        // Упорядочиваем точки
+        Arrays.sort(point);
+
+        for (int i = point[0] + 1; i <= point[1]; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        for (int i = point[2] + 1; i < data.length; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+    
+     /**
+     * <p>
+     * одноточечный оператор кроссинговера на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Точка разрыва
+     */
+    public int[] OK_GoldOnePoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+        // позиция гена, после которой точка разрыва
+        int[] point = new int[1];
+        point[0]  = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+
+        for (int i = point[0] + 1; i < length; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+
+    /**
+     * <p>
+     * двухточечный оператор кроссинговера на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Массив точек разрыва
+     */
+    public int[] OK_GoldTwoPoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) - (float)(length - 1) / 1.618f);
+        point[1] = Math.round((float)(length - 1) / 1.618f);
+        
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+
+        for (int i = point[0] + 1; i <= point[1]; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+
+    /**
+     * <p>
+     * трехточечный оператор кроссинговера на основе чисел фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this и
+     * хромосомой-аргументом.</p>
+     *
+     * @param chr2 вторая хромосома для кроссинговера
+     * @return Массив точек разрыва
+     */
+    public int[] OK_GoldThreePoint(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }
+
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[3];
+        point[0] = Math.round((float)(length - 1) - (float)(length - 1) / 1.618f);
+        point[1] = Math.round((float)(length - 1) / 1.618f);
+        point[2] = Math.round(((float)(length - 1) / 1.618f) + (float)(length - 1 - ((float)(length - 1) / 1.618f)) / 1.618f);
+        // Упорядочиваем точки
+        Arrays.sort(point);
+
+        for (int i = point[0] + 1; i <= point[1]; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        for (int i = point[2] + 1; i < data.length; i++) {
+            //swap
+            Object d = data[i];
+            data[i] = chr2.data[i];
+            chr2.data[i] = d;
+        }
+        return point;
+    }
+    
+    /**
+     * <p>
+     * оператор точечной мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Применима только к бинарным хромосомам.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_Pointer() {
+        // позиции гена, который инвертируется
+        int[] point = new int[1];
+        point[0] = (int) (Math.random() * (length - 1));
+        
+        //инвентирование
+        if (data[point[0]].equals('0')) {
+            data[point[0]] = '1';
+        } else {
+            data[point[0]] = '0';
+        }
+        return point;
+    }
+    
+    /**
+     * <p>
+     * одноточечный оператор мутации на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_GoldOnePoint() {
+        // позиция гена, после которой точка разрыва
+        int[] point = new int[1];
+        point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point[0]];
+        data[point[0]] = data[point[0]+1];
+        data[point[0]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации на основе золотого сечения</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_GoldTwoPoint() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+        point[1] = Math.round((float)(length - 1) / 1.618f);
+
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * одноточечный оператор мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_PointOne() {
+        // позиция гена, после которой точка разрыва
+        int[] point = new int[1];
+        point [0] = (int) (Math.random() * (length - 1));
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point[0]];
+        data[point[0]] = data[point[0]+1];
+        data[point[0]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_PointTwo() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = (int) (Math.random() * (length - 1));
+        do {
+            point[1] = (int) (Math.random() * (length - 1));
+        } while (point[0] == point[1]);
+
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+     /**
+     * <p>
+     * одноточечный оператор мутации на основе чисил фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_FibanacciOnePoint() {
+        // позиция гена, после которой точка разрыва
+        int[] point = new int[1];
+        point[0] = (int) Math.round((float)(length - 1) * 2 / 5);
+        
+        //swap меняются гены стоящие слева и справа точки разрыва
+        Object d = data[point[0]];
+        data[point[0]] = data[point[0]+1];
+        data[point[0]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * двухточечный оператор мутации на основе чисил фибоначи</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this.</p>
+     *
+     * @return Точка разрыва
+     */
+    public int[] MT_FibanacciTwoPoint() {
+        // позиции гена, после которой точка разрыва
+        int point[] = new int[2];
+        point[0] = Math.round((float)(length - 1) * 2 / 5);
+        point[1] = Math.round((float)(length - 1) * 3 / 5);
+
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+        //swap меняются гены стоящие справа точки разрыва
+        Object d = data[point[0]+1];
+        data[point[0]+1] = data[point[1]+1];
+        data[point[1]+1] = d;
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * оператор инверсии</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Полностью инвертирует хромосому. </p>
+     *
+     */
+    public void Inversion() {
+        
+        for (int i = 0; i < (int)data.length/2; i++) {
+            Object d = data[i];
+            data[i] = data[data.length-i-1];
+            data[data.length-i-1] = d;
+        }
     }
     
 }
