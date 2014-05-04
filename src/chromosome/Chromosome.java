@@ -1131,6 +1131,120 @@ public class Chromosome extends Object {
         }
     }
     
+    /**
+     * <p>
+     * оператор инверсии одноточечный</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Случайным образом получается точка разрыва за 
+     * которой часть хромосомы инвертируется. </p>
+     *
+     * @return Точки разрыва
+     */
+    public int[] INV_PointOne() {
+        // получение точки разрыва
+        int point[] = new int[1];
+        point[0] = (int) (Math.random() * (length - 1));
+        // расчет центрального элемента вокруг которого происходит раворот части хромосомы
+        int center = ((data.length-point[0]-1)/2+point[0]+1);
+        //System.out.println(center);
+        for (int i = point[0]+1; i < center; i++) {
+          //  System.out.println(i);
+          //  System.out.println(data.length-i+point[0]);
+            // swap
+            Object d = data[i];
+            data[i] = data[data.length-i+point[0]];
+            data[data.length-i+point[0]] = d;
+        }
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * оператор инверсии двухточечный</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Случайным образом получаются две точки разрыва между
+     * которыми часть хромосомы инвертируется. </p>
+     *
+     * @return Точки разрыва
+     */
+    public int[] INV_PointTwo() {
+        // получение точки разрыва
+        int point[] = new int[2];
+        point[0] = (int) (Math.random() * (length - 1));
+        do {
+            point[1] = (int) (Math.random() * (length - 1));
+        } while (point[0] == point[1]);
+        
+        // Упорядочиваем точки
+        if (point[1] < point[0]) {
+            int s = point[0];
+            point[0] = point[1];
+            point[1] = s;
+        }
+        
+        return INV_PointTwo(point);
+    }
+    
+    /**
+     * <p>
+     * оператор инверсии двухточечный</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Передаются две точки разрыва между
+     * которыми часть хромосомы инвертируется. </p>
+     *
+     * @param point точки разрыва
+     * @return Точки разрыва
+     */
+    public int[] INV_PointTwo(int[] point) {   
+        // расчет центрального элемента вокруг которого происходит раворот части хромосомы
+        int center = ((point[1]-point[0]-1)/2+point[0]+1);
+        //System.out.println(center);
+        for (int i = point[0]+1; i <= center; i++) {
+            if (i == (int)(point[1]-i+point[0]+1)) continue;
+            //System.out.println(i);
+            //System.out.println(point[1]-i+point[0]+1);
+            // swap
+            Object d = data[i];
+            data[i] = data[point[1]-i+point[0]+1];
+            data[point[1]-i+point[0]+1] = d;
+        }
+        
+        return point;
+    }
+    
+    /**
+     * <p>
+     * оператор транслокации</p>
+     * <p>
+     * Используется отноительно текущей хромосомы this. 
+     * Передаются две точки разрыва между
+     * которыми часть хромосомы инвертируется. </p>
+     *
+     * @param chr2 вторая хромосома
+     * @return Точки разрыва
+     */
+    public int[] Translocation(Chromosome chr2) {
+        if (this.getLength() != chr2.getLength()) {
+            return null;
+        }   
+        int point[];
+        int point2[] = new int[2];
+        
+        point = this.OK_PointOne(chr2);
+        point2[0] = point[0];
+        point2[1] = length-1;
+        this.INV_PointTwo(point2);
+        chr2.INV_PointTwo(point2);
+        
+        return point;
+    }
+    
+    
+    
     public boolean findSequence(Object[] sequence){
         if(data.length<sequence.length)return false;
         for(int  i=0;i<data.length-sequence.length+1;i++)
