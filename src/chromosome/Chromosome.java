@@ -49,6 +49,7 @@ public class Chromosome extends Object {
             o[i] = d.charAt(i);
         }
         data = o;
+        length = data.length;
         return this;
     }
 
@@ -708,15 +709,24 @@ public class Chromosome extends Object {
 
         return 0.f;
     }
-    
-    public static Chromosome OK_greedy(Chromosome[] c,int [][] table,Object[] alphabet){
+    /**
+     * <p>
+     * Жадный оператор кроссинговера
+     * </p>
+     * @param c Массив хромосом-предков типа Chromosome 
+     * @param table Матрица смежности графа для данного надора хромосом
+     * @param alphabet Алфавит, использующийся в хромосомах в виде массива (обяхательно упорядоченный так же как и столбцы/строки в матрице смежности)
+     * @param isMax Максимизируется ли функция; true - максимизация, false - минимизация
+     * @return Хромосома-потомок
+     */
+    public static Chromosome OK_greedy(Chromosome[] c,int [][] table,Object[] alphabet,boolean isMax){
         if(c.length<1)return null;
         int c_len = c[0].length;
         for(Chromosome ce:c){
-            if(c.length!=c_len){System.err.println("Chromosomes' lengths is different");return null;}
+            if(ce.length!=c_len){System.err.println("Chromosomes' lengths is different");return null;}
         }
         int sel_chromo = (int)(Math.random()*c.length);
-        int point = (int)(Math.random()*c[0].length);
+        int point = (int)(Math.random()*(c_len-1));
         
         System.out.println("selected: "+sel_chromo+" - "+c[sel_chromo].toString(point));
         
@@ -724,8 +734,18 @@ public class Chromosome extends Object {
         
         List<Variant> vars = new ArrayList<>();
         
-        int prev_add_index = point+1;
-        result.data[0] = c[sel_chromo].data[prev_add_index];
+        
+        result.data = new Object[c_len];
+        result.data[0] = c[sel_chromo].data[point];
+        
+        int prev_add_index = 0;
+        for(int a=0;a<alphabet.length;a++)
+        {
+            if(alphabet[a] == result.data[0])prev_add_index = a;
+        }
+        
+        
+        for(int a=1; a < c_len; a++){
         //находим варианты и их стоимости 
         for(int i=0;i<table[prev_add_index].length;i++)
         {
@@ -735,11 +755,46 @@ public class Chromosome extends Object {
            }
         }
         //отсеиваем недопустимые варианты
-        for(Variant v:vars)
+        ArrayList<Variant> vars_cpy = new ArrayList<>(vars);
+        for(Variant v:vars_cpy)
         {
-//            Search.LinearSearch()
+            boolean var_ok = false;
+            for(int counter=0;counter<c.length;counter++){
+            Object[] s = {result.data[a-1],v.value};
+            if(c[counter].findSequence(s)){var_ok = true;break;}
+            }
+            if(Search.LinearSearch(result.data, v.value)!=-1)var_ok = false;
+            if(!var_ok)vars.remove(v);
+            
         }
+        
         //выбираем мин/макс стоимость, добавляем значение
+        Object sel_value = null;
+        int sel_weight;
+        if(isMax){
+        sel_weight = -1;
+        for(Variant v: vars)
+        {
+            if(v.weight > sel_weight){sel_weight = v.weight; sel_value = v.value;}
+        }
+        }
+        else{
+            sel_weight = Integer.MAX_VALUE;
+            for(Variant v: vars)
+             {
+            if(v.weight < sel_weight){sel_weight = v.weight; sel_value = v.value;}
+        }
+        }
+            if(sel_value == null){
+                for(Object o:alphabet)
+                {
+                    if(Search.LinearSearch(result.data, o) == -1)sel_value = o;
+                }
+            }
+            result.data[a] = sel_value;
+            prev_add_index = Search.LinearSearch(alphabet, sel_value);
+            vars.clear();
+        }
         //обнуляем список вариантов
         //повторяем пока не заполним хромосому
         
@@ -1245,14 +1300,12 @@ public class Chromosome extends Object {
         return point;
     }
     
-    
-    
     public boolean findSequence(Object[] sequence){
         if(data.length<sequence.length)return false;
         for(int  i=0;i<data.length-sequence.length+1;i++)
         {
             boolean equal = true;
-            for(int k=i;k<sequence.length+i;k++)
+            for(int k=i;k<sequence.length+i && equal;k++)
             {
                 if(data[k] != sequence[k-i])equal = false;
             }
