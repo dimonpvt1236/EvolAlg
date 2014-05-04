@@ -5,8 +5,12 @@
  */
 package chromosome;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import utils.Search;
+import utils.Variant;
 
 /**
  *
@@ -706,7 +710,7 @@ public class Chromosome extends Object {
         return 0.f;
     }
     
-    public static Chromosome OK_greedy(Chromosome[] c,int [][] table){
+    public static Chromosome OK_greedy(Chromosome[] c,int [][] table,Object[] alphabet){
         if(c.length<1)return null;
         int c_len = c[0].length;
         for(Chromosome ce:c){
@@ -715,10 +719,30 @@ public class Chromosome extends Object {
         int sel_chromo = (int)(Math.random()*c.length);
         int point = (int)(Math.random()*c[0].length);
         
-        System.out.println("selected: "+sel_chromo+" -  "+c[sel_chromo].toString(point));
+        System.out.println("selected: "+sel_chromo+" - "+c[sel_chromo].toString(point));
         
         Chromosome result = new Chromosome(c_len);
         
+        List<Variant> vars = new ArrayList<>();
+        
+        int prev_add_index = point+1;
+        result.data[0] = c[sel_chromo].data[prev_add_index];
+        //находим варианты и их стоимости 
+        for(int i=0;i<table[prev_add_index].length;i++)
+        {
+           int cur_table_value = table[prev_add_index][i];
+           if(cur_table_value > 0 ){
+               vars.add(new Variant(cur_table_value,alphabet[i]));
+           }
+        }
+        //отсеиваем недопустимые варианты
+        for(Variant v:vars)
+        {
+            Search.LinearSearch()
+        }
+        //выбираем мин/макс стоимость, добавляем значение
+        //обнуляем список вариантов
+        //повторяем пока не заполним хромосому
         
         return result;
     }
@@ -1108,4 +1132,7 @@ public class Chromosome extends Object {
         }
     }
     
+    public boolean findSequence(Object[] sequence){
+        return true;
+    }
 }
