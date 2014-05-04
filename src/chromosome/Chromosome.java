@@ -8,7 +8,6 @@ package chromosome;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import utils.Search;
 import utils.Variant;
 
@@ -732,13 +731,13 @@ public class Chromosome extends Object {
         {
            int cur_table_value = table[prev_add_index][i];
            if(cur_table_value > 0 ){
-               vars.add(new Variant(cur_table_value,alphabet[i]));
+               vars.add(new Variant(alphabet[i],cur_table_value));
            }
         }
         //отсеиваем недопустимые варианты
         for(Variant v:vars)
         {
-            Search.LinearSearch()
+//            Search.LinearSearch()
         }
         //выбираем мин/макс стоимость, добавляем значение
         //обнуляем список вариантов
@@ -1133,6 +1132,16 @@ public class Chromosome extends Object {
     }
     
     public boolean findSequence(Object[] sequence){
-        return true;
+        if(data.length<sequence.length)return false;
+        for(int  i=0;i<data.length-sequence.length+1;i++)
+        {
+            boolean equal = true;
+            for(int k=i;k<sequence.length+i;k++)
+            {
+                if(data[k] != sequence[k-i])equal = false;
+            }
+            if(equal)return true;
+        }
+        return false;
     }
 }
