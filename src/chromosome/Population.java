@@ -164,4 +164,33 @@ public class Population {
         length = newpop.size();
         return this;
     }
+    
+    
+    public void Print() {
+        for(int i=0; i<this.length; i++) {
+            System.out.println(data.get(i).toString());
+        }
+    }
+    
+    /**
+     * <p>
+     * Вычислеят значение целевой функции для хромосомы</p>
+     * <p>
+     * На данным момент возвращает просто десятичное значение двичной хромосомы
+     * в послдствии необходимо задать саму функцию значение которой будет высчитываться.</p>
+     *
+     * @param chr хромосома для расчета ЦФ
+     * @return Значение целевойфункции
+     */
+    public double calculateCF(Chromosome chr) {
+        double result=0;
+        chr.setCF(chr.BinToDec());
+        
+        return result;
+    }
+    
+    public Population SelectionWheelFortune() {
+        
+        
+    }
 }

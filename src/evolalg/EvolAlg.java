@@ -35,7 +35,7 @@ public class EvolAlg {
          * Это происходит поскольку результат жадного алгоритма сильно зависит
          * от выбранной хромосомы и позиции разрыва
          */
-        Chromosome[] c ={ new Chromosome().setData("abcde"),
+       /* Chromosome[] c ={ new Chromosome().setData("abcde"),
                           new Chromosome().setData("bdeca"),
                           new Chromosome().setData("ebadc")};
         int[][] t = {{-1,15,6,7,8},
@@ -46,7 +46,17 @@ public class EvolAlg {
         Object[] abc = {'a','b','c','d','e'};
         Chromosome res = Chromosome.OK_greedy(c, t, abc,false);
         
-        System.out.print(res.toString());
+        System.out.print(res.toString());*/
+        
+        Population populary = new Population();
+        
+        populary.genFullPopulation(8);
+        populary.addShotgun(5);
+        populary.Print();
+        
+        
+
+        //System.out.print(xrom.BinToDec());
        
     }
 

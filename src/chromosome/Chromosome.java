@@ -18,6 +18,7 @@ import utils.Variant;
 public class Chromosome extends Object {
 
     private int length;
+    private double cf;
 
     private Object[] data;
 
@@ -30,6 +31,14 @@ public class Chromosome extends Object {
 
     public int getLength() {
         return length;
+    }
+    
+    public double getCF() {
+        return cf;
+    }
+
+    public void setCF(double cf) {
+        this.cf = cf;
     }
 
     public Chromosome setLength(int l) {
@@ -110,6 +119,15 @@ public class Chromosome extends Object {
         hash = 89 * hash + this.length;
         hash = 89 * hash + Arrays.deepHashCode(this.data);
         return hash;
+    }
+    
+    public int BinToDec() {
+        int result=0;
+        for (int i=0;i<this.length; i++) {
+            int x = (int)Integer.valueOf(data[i].toString());
+            result+= (int)( x * Math.pow((double)2, (double)this.length-1-i));
+        }
+        return result;
     }
 
     /**
