@@ -7,6 +7,7 @@ package evolalg;
 
 import chromosome.*;
 import java.io.*;
+import java.util.logging.LogManager;
 
 /**
  *
@@ -18,15 +19,23 @@ public class EvolAlg {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-               
-        /*BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+       
+        try {
+            LogManager.getLogManager().readConfiguration(
+                    EvolAlg.class.getResourceAsStream("/logging.properties"));
+        } catch (IOException e) {
+            System.err.println("Could not setup logger configuration: " + e.toString());
+        }
+        
+        /*    
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String number1 = null;
         try {
             number1 = in.readLine();
         } catch (IOException ioex) {
             System.out.println(ioex.toString());
-        }
-        */
+        }*/
+        
         
         /**
          * сейчас забит пример для учебника, если хочется увидеть результат
@@ -48,16 +57,14 @@ public class EvolAlg {
         
         System.out.print(res.toString());*/
         
-        Population populary = new Population();
+        Population pop = new Population();
         
-        populary.genFullPopulation(8);
-        populary.addShotgun(5);
-        populary.Print();
+        pop.genFullPopulation(8).addShotgun(5);
+        System.out.println(pop.toString()+"\n________");
+        Population newpop = pop.SelectionWheelFortune();
         
+        System.out.println(newpop.toString());
         
-
-        //System.out.print(xrom.BinToDec());
-       
     }
 
 }

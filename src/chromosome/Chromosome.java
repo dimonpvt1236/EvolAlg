@@ -32,7 +32,7 @@ public class Chromosome extends Object {
     public int getLength() {
         return length;
     }
-    
+
     public double getCF() {
         return cf;
     }
@@ -115,17 +115,18 @@ public class Chromosome extends Object {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + this.length;
-        hash = 89 * hash + Arrays.deepHashCode(this.data);
+        int hash = 3;
+        hash = 71 * hash + this.length;
+        hash = 71 * hash + (int) (Double.doubleToLongBits(this.cf) ^ (Double.doubleToLongBits(this.cf) >>> 32));
+        hash = 71 * hash + Arrays.deepHashCode(this.data);
         return hash;
     }
-    
+
     public int BinToDec() {
-        int result=0;
-        for (int i=0;i<this.length; i++) {
-            int x = (int)Integer.valueOf(data[i].toString());
-            result+= (int)( x * Math.pow((double)2, (double)this.length-1-i));
+        int result = 0;
+        for (int i = 0; i < this.length; i++) {
+            int x = (int) Integer.valueOf(data[i].toString());
+            result += (int) (x * Math.pow((double) 2, (double) this.length - 1 - i));
         }
         return result;
     }
@@ -325,10 +326,10 @@ public class Chromosome extends Object {
         Object[] res2 = new Object[data.length];
 
         for (int i = 0; i < data.length; i++) {
-            if (i <= point[0] || i>point [1]) {
+            if (i <= point[0] || i > point[1]) {
                 res1[i] = data[i];
                 res2[i] = chr2.data[i];
-            } else{
+            } else {
                 for (int j = 0; j < chr2.data.length; j++) {
                     Object obj = chr2.data[j];
                     boolean isIn = false;
@@ -380,7 +381,7 @@ public class Chromosome extends Object {
             return null;
         }
         // позиция гена, после которого точка разрыва
-        int[] point = new int [1];
+        int[] point = new int[1];
         point[0] = (int) (Math.random() * (length - 1));
 
         Object[] res1 = new Object[data.length];
@@ -724,89 +725,107 @@ public class Chromosome extends Object {
     }
 
     public double FunctionValue() {
-
-        return 0.f;
+        cf = BinToDec();
+        return cf;
     }
+
     /**
      * <p>
      * Жадный оператор кроссинговера
      * </p>
-     * @param c Массив хромосом-предков типа Chromosome 
+     *
+     * @param c Массив хромосом-предков типа Chromosome
      * @param table Матрица смежности графа для данного надора хромосом
-     * @param alphabet Алфавит, использующийся в хромосомах в виде массива (обяхательно упорядоченный так же как и столбцы/строки в матрице смежности)
-     * @param isMax Максимизируется ли функция; true - максимизация, false - минимизация
+     * @param alphabet Алфавит, использующийся в хромосомах в виде массива
+     * (обяхательно упорядоченный так же как и столбцы/строки в матрице
+     * смежности)
+     * @param isMax Максимизируется ли функция; true - максимизация, false -
+     * минимизация
      * @return Хромосома-потомок
      */
-    public static Chromosome OK_greedy(Chromosome[] c,int [][] table,Object[] alphabet,boolean isMax){
-        if(c.length<1)return null;
-        int c_len = c[0].length;
-        for(Chromosome ce:c){
-            if(ce.length!=c_len){System.err.println("Chromosomes' lengths is different");return null;}
+    public static Chromosome OK_greedy(Chromosome[] c, int[][] table, Object[] alphabet, boolean isMax) {
+        if (c.length < 1) {
+            return null;
         }
-        int sel_chromo = (int)(Math.random()*c.length);
-        int point = (int)(Math.random()*(c_len-1));
-        
-        System.out.println("selected: "+sel_chromo+" - "+c[sel_chromo].toString(point));
-        
+        int c_len = c[0].length;
+        for (Chromosome ce : c) {
+            if (ce.length != c_len) {
+                System.err.println("Chromosomes' lengths is different");
+                return null;
+            }
+        }
+        int sel_chromo = (int) (Math.random() * c.length);
+        int point = (int) (Math.random() * (c_len - 1));
+
+        System.out.println("selected: " + sel_chromo + " - " + c[sel_chromo].toString(point));
+
         Chromosome result = new Chromosome(c_len);
-        
+
         List<Variant> vars = new ArrayList<>();
-        
-        
+
         result.data = new Object[c_len];
         result.data[0] = c[sel_chromo].data[point];
-        
+
         int prev_add_index = 0;
-        for(int a=0;a<alphabet.length;a++)
-        {
-            if(alphabet[a] == result.data[0])prev_add_index = a;
-        }
-        
-        
-        for(int a=1; a < c_len; a++){
-        //находим варианты и их стоимости 
-        for(int i=0;i<table[prev_add_index].length;i++)
-        {
-           int cur_table_value = table[prev_add_index][i];
-           if(cur_table_value > 0 ){
-               vars.add(new Variant(alphabet[i],cur_table_value));
-           }
-        }
-        //отсеиваем недопустимые варианты
-        ArrayList<Variant> vars_cpy = new ArrayList<>(vars);
-        for(Variant v:vars_cpy)
-        {
-            boolean var_ok = false;
-            for(int counter=0;counter<c.length;counter++){
-            Object[] s = {result.data[a-1],v.value};
-            if(c[counter].findSequence(s)){var_ok = true;break;}
+        for (int a = 0; a < alphabet.length; a++) {
+            if (alphabet[a] == result.data[0]) {
+                prev_add_index = a;
             }
-            if(Search.LinearSearch(result.data, v.value)!=-1)var_ok = false;
-            if(!var_ok)vars.remove(v);
-            
         }
-        
-        //выбираем мин/макс стоимость, добавляем значение
-        Object sel_value = null;
-        int sel_weight;
-        if(isMax){
-        sel_weight = -1;
-        for(Variant v: vars)
-        {
-            if(v.weight > sel_weight){sel_weight = v.weight; sel_value = v.value;}
-        }
-        }
-        else{
-            sel_weight = Integer.MAX_VALUE;
-            for(Variant v: vars)
-             {
-            if(v.weight < sel_weight){sel_weight = v.weight; sel_value = v.value;}
-        }
-        }
-            if(sel_value == null){
-                for(Object o:alphabet)
-                {
-                    if(Search.LinearSearch(result.data, o) == -1)sel_value = o;
+
+        for (int a = 1; a < c_len; a++) {
+            //находим варианты и их стоимости 
+            for (int i = 0; i < table[prev_add_index].length; i++) {
+                int cur_table_value = table[prev_add_index][i];
+                if (cur_table_value > 0) {
+                    vars.add(new Variant(alphabet[i], cur_table_value));
+                }
+            }
+            //отсеиваем недопустимые варианты
+            ArrayList<Variant> vars_cpy = new ArrayList<>(vars);
+            for (Variant v : vars_cpy) {
+                boolean var_ok = false;
+                for (int counter = 0; counter < c.length; counter++) {
+                    Object[] s = {result.data[a - 1], v.value};
+                    if (c[counter].findSequence(s)) {
+                        var_ok = true;
+                        break;
+                    }
+                }
+                if (Search.LinearSearch(result.data, v.value) != -1) {
+                    var_ok = false;
+                }
+                if (!var_ok) {
+                    vars.remove(v);
+                }
+
+            }
+
+            //выбираем мин/макс стоимость, добавляем значение
+            Object sel_value = null;
+            int sel_weight;
+            if (isMax) {
+                sel_weight = -1;
+                for (Variant v : vars) {
+                    if (v.weight > sel_weight) {
+                        sel_weight = v.weight;
+                        sel_value = v.value;
+                    }
+                }
+            } else {
+                sel_weight = Integer.MAX_VALUE;
+                for (Variant v : vars) {
+                    if (v.weight < sel_weight) {
+                        sel_weight = v.weight;
+                        sel_value = v.value;
+                    }
+                }
+            }
+            if (sel_value == null) {
+                for (Object o : alphabet) {
+                    if (Search.LinearSearch(result.data, o) == -1) {
+                        sel_value = o;
+                    }
                 }
             }
             result.data[a] = sel_value;
@@ -815,10 +834,10 @@ public class Chromosome extends Object {
         }
         //обнуляем список вариантов
         //повторяем пока не заполним хромосому
-        
+
         return result;
     }
-    
+
     /**
      * <p>
      * одноточечный оператор кроссинговера на основе чисел фибоначи</p>
@@ -835,7 +854,7 @@ public class Chromosome extends Object {
         }
         // позиция гена, после которой точка разрыва
         int[] point = new int[1];
-        point[0] = Math.round((float)(length - 1) * 2 / 5);
+        point[0] = Math.round((float) (length - 1) * 2 / 5);
 
         for (int i = point[0] + 1; i < length; i++) {
             //swap
@@ -863,9 +882,9 @@ public class Chromosome extends Object {
 
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
-        point[0] = Math.round((float)(length - 1) * 2 / 5);
-        point[1] = Math.round((float)(length - 1) * 3 / 5);
-        
+        point[0] = Math.round((float) (length - 1) * 2 / 5);
+        point[1] = Math.round((float) (length - 1) * 3 / 5);
+
         // Упорядочиваем точки
         if (point[1] < point[0]) {
             int s = point[0];
@@ -899,9 +918,9 @@ public class Chromosome extends Object {
 
         // позиции гена, после которой точка разрыва
         int point[] = new int[3];
-        point[0] = Math.round((float)(length - 1) * 2 / 5);
-        point[1] = Math.round((float)(length - 1) * 3 / 5);
-        point[2] = Math.round((float)(length - 1)-(float)((length - 1) * 3 / 5)+((float)(length - 1) * 2 / 5));
+        point[0] = Math.round((float) (length - 1) * 2 / 5);
+        point[1] = Math.round((float) (length - 1) * 3 / 5);
+        point[2] = Math.round((float) (length - 1) - (float) ((length - 1) * 3 / 5) + ((float) (length - 1) * 2 / 5));
         // Упорядочиваем точки
         Arrays.sort(point);
 
@@ -919,8 +938,8 @@ public class Chromosome extends Object {
         }
         return point;
     }
-    
-     /**
+
+    /**
      * <p>
      * одноточечный оператор кроссинговера на основе золотого сечения</p>
      * <p>
@@ -936,7 +955,7 @@ public class Chromosome extends Object {
         }
         // позиция гена, после которой точка разрыва
         int[] point = new int[1];
-        point[0]  = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
+        point[0] = Math.round((float) (length - 1) - (float) (length - 1) / 1.618f);
 
         for (int i = point[0] + 1; i < length; i++) {
             //swap
@@ -964,9 +983,9 @@ public class Chromosome extends Object {
 
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
-        point[0] = Math.round((float)(length - 1) - (float)(length - 1) / 1.618f);
-        point[1] = Math.round((float)(length - 1) / 1.618f);
-        
+        point[0] = Math.round((float) (length - 1) - (float) (length - 1) / 1.618f);
+        point[1] = Math.round((float) (length - 1) / 1.618f);
+
         // Упорядочиваем точки
         if (point[1] < point[0]) {
             int s = point[0];
@@ -1000,9 +1019,9 @@ public class Chromosome extends Object {
 
         // позиции гена, после которой точка разрыва
         int point[] = new int[3];
-        point[0] = Math.round((float)(length - 1) - (float)(length - 1) / 1.618f);
-        point[1] = Math.round((float)(length - 1) / 1.618f);
-        point[2] = Math.round(((float)(length - 1) / 1.618f) + (float)(length - 1 - ((float)(length - 1) / 1.618f)) / 1.618f);
+        point[0] = Math.round((float) (length - 1) - (float) (length - 1) / 1.618f);
+        point[1] = Math.round((float) (length - 1) / 1.618f);
+        point[2] = Math.round(((float) (length - 1) / 1.618f) + (float) (length - 1 - ((float) (length - 1) / 1.618f)) / 1.618f);
         // Упорядочиваем точки
         Arrays.sort(point);
 
@@ -1020,13 +1039,13 @@ public class Chromosome extends Object {
         }
         return point;
     }
-    
+
     /**
      * <p>
      * оператор точечной мутации</p>
      * <p>
-     * Используется отноительно текущей хромосомы this. 
-     * Применима только к бинарным хромосомам.</p>
+     * Используется отноительно текущей хромосомы this. Применима только к
+     * бинарным хромосомам.</p>
      *
      * @return Точка разрыва
      */
@@ -1034,7 +1053,7 @@ public class Chromosome extends Object {
         // позиции гена, который инвертируется
         int[] point = new int[1];
         point[0] = (int) (Math.random() * (length - 1));
-        
+
         //инвентирование
         if (data[point[0]].equals('0')) {
             data[point[0]] = '1';
@@ -1043,7 +1062,7 @@ public class Chromosome extends Object {
         }
         return point;
     }
-    
+
     /**
      * <p>
      * одноточечный оператор мутации на основе золотого сечения</p>
@@ -1055,16 +1074,16 @@ public class Chromosome extends Object {
     public int[] MT_GoldOnePoint() {
         // позиция гена, после которой точка разрыва
         int[] point = new int[1];
-        point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
-        
+        point[0] = Math.round((float) (length - 1) - (float) (length - 1) / 1.618f);
+
         //swap меняются гены стоящие слева и справа точки разрыва
         Object d = data[point[0]];
-        data[point[0]] = data[point[0]+1];
-        data[point[0]+1] = d;
-        
+        data[point[0]] = data[point[0] + 1];
+        data[point[0] + 1] = d;
+
         return point;
     }
-    
+
     /**
      * <p>
      * двухточечный оператор мутации на основе золотого сечения</p>
@@ -1076,17 +1095,17 @@ public class Chromosome extends Object {
     public int[] MT_GoldTwoPoint() {
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
-        point[0] = Math.round((float)(length - 1) -(float)(length - 1) / 1.618f);
-        point[1] = Math.round((float)(length - 1) / 1.618f);
+        point[0] = Math.round((float) (length - 1) - (float) (length - 1) / 1.618f);
+        point[1] = Math.round((float) (length - 1) / 1.618f);
 
         //swap меняются гены стоящие справа точки разрыва
-        Object d = data[point[0]+1];
-        data[point[0]+1] = data[point[1]+1];
-        data[point[1]+1] = d;
-        
+        Object d = data[point[0] + 1];
+        data[point[0] + 1] = data[point[1] + 1];
+        data[point[1] + 1] = d;
+
         return point;
     }
-    
+
     /**
      * <p>
      * одноточечный оператор мутации</p>
@@ -1098,16 +1117,16 @@ public class Chromosome extends Object {
     public int[] MT_PointOne() {
         // позиция гена, после которой точка разрыва
         int[] point = new int[1];
-        point [0] = (int) (Math.random() * (length - 1));
-        
+        point[0] = (int) (Math.random() * (length - 1));
+
         //swap меняются гены стоящие слева и справа точки разрыва
         Object d = data[point[0]];
-        data[point[0]] = data[point[0]+1];
-        data[point[0]+1] = d;
-        
+        data[point[0]] = data[point[0] + 1];
+        data[point[0] + 1] = d;
+
         return point;
     }
-    
+
     /**
      * <p>
      * двухточечный оператор мутации</p>
@@ -1131,14 +1150,14 @@ public class Chromosome extends Object {
             point[1] = s;
         }
         //swap меняются гены стоящие справа точки разрыва
-        Object d = data[point[0]+1];
-        data[point[0]+1] = data[point[1]+1];
-        data[point[1]+1] = d;
-        
+        Object d = data[point[0] + 1];
+        data[point[0] + 1] = data[point[1] + 1];
+        data[point[1] + 1] = d;
+
         return point;
     }
-    
-     /**
+
+    /**
      * <p>
      * одноточечный оператор мутации на основе чисил фибоначи</p>
      * <p>
@@ -1149,16 +1168,16 @@ public class Chromosome extends Object {
     public int[] MT_FibanacciOnePoint() {
         // позиция гена, после которой точка разрыва
         int[] point = new int[1];
-        point[0] = (int) Math.round((float)(length - 1) * 2 / 5);
-        
+        point[0] = (int) Math.round((float) (length - 1) * 2 / 5);
+
         //swap меняются гены стоящие слева и справа точки разрыва
         Object d = data[point[0]];
-        data[point[0]] = data[point[0]+1];
-        data[point[0]+1] = d;
-        
+        data[point[0]] = data[point[0] + 1];
+        data[point[0] + 1] = d;
+
         return point;
     }
-    
+
     /**
      * <p>
      * двухточечный оператор мутации на основе чисил фибоначи</p>
@@ -1170,8 +1189,8 @@ public class Chromosome extends Object {
     public int[] MT_FibanacciTwoPoint() {
         // позиции гена, после которой точка разрыва
         int point[] = new int[2];
-        point[0] = Math.round((float)(length - 1) * 2 / 5);
-        point[1] = Math.round((float)(length - 1) * 3 / 5);
+        point[0] = Math.round((float) (length - 1) * 2 / 5);
+        point[1] = Math.round((float) (length - 1) * 3 / 5);
 
         // Упорядочиваем точки
         if (point[1] < point[0]) {
@@ -1180,37 +1199,36 @@ public class Chromosome extends Object {
             point[1] = s;
         }
         //swap меняются гены стоящие справа точки разрыва
-        Object d = data[point[0]+1];
-        data[point[0]+1] = data[point[1]+1];
-        data[point[1]+1] = d;
-        
+        Object d = data[point[0] + 1];
+        data[point[0] + 1] = data[point[1] + 1];
+        data[point[1] + 1] = d;
+
         return point;
     }
-    
+
     /**
      * <p>
      * оператор инверсии</p>
      * <p>
-     * Используется отноительно текущей хромосомы this. 
-     * Полностью инвертирует хромосому. </p>
+     * Используется отноительно текущей хромосомы this. Полностью инвертирует
+     * хромосому. </p>
      *
      */
     public void Inversion() {
-        
-        for (int i = 0; i < (int)data.length/2; i++) {
+
+        for (int i = 0; i < (int) data.length / 2; i++) {
             Object d = data[i];
-            data[i] = data[data.length-i-1];
-            data[data.length-i-1] = d;
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = d;
         }
     }
-    
+
     /**
      * <p>
      * оператор инверсии одноточечный</p>
      * <p>
-     * Используется отноительно текущей хромосомы this. 
-     * Случайным образом получается точка разрыва за 
-     * которой часть хромосомы инвертируется. </p>
+     * Используется отноительно текущей хромосомы this. Случайным образом
+     * получается точка разрыва за которой часть хромосомы инвертируется. </p>
      *
      * @return Точки разрыва
      */
@@ -1219,27 +1237,27 @@ public class Chromosome extends Object {
         int point[] = new int[1];
         point[0] = (int) (Math.random() * (length - 1));
         // расчет центрального элемента вокруг которого происходит раворот части хромосомы
-        int center = ((data.length-point[0]-1)/2+point[0]+1);
+        int center = ((data.length - point[0] - 1) / 2 + point[0] + 1);
         //System.out.println(center);
-        for (int i = point[0]+1; i < center; i++) {
+        for (int i = point[0] + 1; i < center; i++) {
           //  System.out.println(i);
-          //  System.out.println(data.length-i+point[0]);
+            //  System.out.println(data.length-i+point[0]);
             // swap
             Object d = data[i];
-            data[i] = data[data.length-i+point[0]];
-            data[data.length-i+point[0]] = d;
+            data[i] = data[data.length - i + point[0]];
+            data[data.length - i + point[0]] = d;
         }
-        
+
         return point;
     }
-    
+
     /**
      * <p>
      * оператор инверсии двухточечный</p>
      * <p>
-     * Используется отноительно текущей хромосомы this. 
-     * Случайным образом получаются две точки разрыва между
-     * которыми часть хромосомы инвертируется. </p>
+     * Используется отноительно текущей хромосомы this. Случайным образом
+     * получаются две точки разрыва между которыми часть хромосомы
+     * инвертируется. </p>
      *
      * @return Точки разрыва
      */
@@ -1250,54 +1268,53 @@ public class Chromosome extends Object {
         do {
             point[1] = (int) (Math.random() * (length - 1));
         } while (point[0] == point[1]);
-        
+
         // Упорядочиваем точки
         if (point[1] < point[0]) {
             int s = point[0];
             point[0] = point[1];
             point[1] = s;
         }
-        
+
         return INV_PointTwo(point);
     }
-    
+
     /**
      * <p>
      * оператор инверсии двухточечный</p>
      * <p>
-     * Используется отноительно текущей хромосомы this. 
-     * Передаются две точки разрыва между
-     * которыми часть хромосомы инвертируется. </p>
+     * Используется отноительно текущей хромосомы this. Передаются две точки
+     * разрыва между которыми часть хромосомы инвертируется. </p>
      *
      * @param point точки разрыва
      * @return Точки разрыва
      */
-    public int[] INV_PointTwo(int[] point) {   
+    public int[] INV_PointTwo(int[] point) {
         // расчет центрального элемента вокруг которого происходит раворот части хромосомы
-        int center = ((point[1]-point[0]-1)/2+point[0]+1);
+        int center = ((point[1] - point[0] - 1) / 2 + point[0] + 1);
         //System.out.println(center);
-        for (int i = point[0]+1; i <= center; i++) {
-            if (i == (int)(point[1]-i+point[0]+1)) continue;
+        for (int i = point[0] + 1; i <= center; i++) {
+            if (i == (int) (point[1] - i + point[0] + 1)) {
+                continue;
+            }
             //System.out.println(i);
             //System.out.println(point[1]-i+point[0]+1);
             // swap
             Object d = data[i];
-            data[i] = data[point[1]-i+point[0]+1];
-            data[point[1]-i+point[0]+1] = d;
+            data[i] = data[point[1] - i + point[0] + 1];
+            data[point[1] - i + point[0] + 1] = d;
         }
-        
+
         return point;
     }
-    
+
     /**
      * <p>
      * оператор транслокации</p>
      * <p>
-     * Используется отноительно текущей хромосомы this и
-     * хромосомой-аргументом. 
-     * Случаным образом получается точка разрыва, 
-     * после чего проводится обмен правыми частями хромосом и 
-     * их инвертация.</p>
+     * Используется отноительно текущей хромосомы this и хромосомой-аргументом.
+     * Случаным образом получается точка разрыва, после чего проводится обмен
+     * правыми частями хромосом и их инвертация.</p>
      *
      * @param chr2 вторая хромосома
      * @return Точки разрыва
@@ -1305,29 +1322,33 @@ public class Chromosome extends Object {
     public int[] Translocation(Chromosome chr2) {
         if (this.getLength() != chr2.getLength()) {
             return null;
-        }   
+        }
         int point[];
         int point2[] = new int[2];
-        
+
         point = this.OK_PointOne(chr2);
         point2[0] = point[0];
-        point2[1] = length-1;
+        point2[1] = length - 1;
         this.INV_PointTwo(point2);
         chr2.INV_PointTwo(point2);
-        
+
         return point;
     }
-    
-    public boolean findSequence(Object[] sequence){
-        if(data.length<sequence.length)return false;
-        for(int  i=0;i<data.length-sequence.length+1;i++)
-        {
+
+    public boolean findSequence(Object[] sequence) {
+        if (data.length < sequence.length) {
+            return false;
+        }
+        for (int i = 0; i < data.length - sequence.length + 1; i++) {
             boolean equal = true;
-            for(int k=i;k<sequence.length+i && equal;k++)
-            {
-                if(data[k] != sequence[k-i])equal = false;
+            for (int k = i; k < sequence.length + i && equal; k++) {
+                if (data[k] != sequence[k - i]) {
+                    equal = false;
+                }
             }
-            if(equal)return true;
+            if (equal) {
+                return true;
+            }
         }
         return false;
     }

@@ -6,8 +6,13 @@
 package chromosome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,7 +23,10 @@ public class Population {
     private List<Chromosome> data;
     private int length;
     private int chromoLength;
-
+    private double sumCF;
+    private double maxCF;
+    private double CF_mid;
+  
     
     public Population() {
     }
@@ -59,20 +67,20 @@ public class Population {
     public List<Chromosome> getData() {
         return data;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         String str = "";
         for (Chromosome c : data) {
-            str+=c.toString()+"\n";
+            str += c.toString() + "\n";
         }
-        str+="Total: "+data.size()+" chromosome(s)\n";
+        str += "Total: " + data.size() + " chromosome(s)\n";
         return str;
     }
-    
+
     @Override
-    public boolean equals(Object p){
-       return p.hashCode() == this.hashCode() && p.getClass() == Population.class;
+    public boolean equals(Object p) {
+        return p.hashCode() == this.hashCode() && p.getClass() == Population.class;
     }
 
     @Override
@@ -164,33 +172,113 @@ public class Population {
         length = newpop.size();
         return this;
     }
-    
-    
-    public void Print() {
-        for(int i=0; i<this.length; i++) {
-            System.out.println(data.get(i).toString());
-        }
-    }
-    
+
     /**
      * <p>
      * Вычислеят значение целевой функции для хромосомы</p>
      * <p>
      * На данным момент возвращает просто десятичное значение двичной хромосомы
-     * в послдствии необходимо задать саму функцию значение которой будет высчитываться.</p>
+     * в послдствии необходимо задать саму функцию значение которой будет
+     * высчитываться.</p>
      *
-     * @param chr хромосома для расчета ЦФ
-     * @return Значение целевойфункции
      */
-    public double calculateCF(Chromosome chr) {
-        double result=0;
-        chr.setCF(chr.BinToDec());
-        
-        return result;
+    public void calculateAllCF() {
+        sumCF = 0;
+        maxCF = 0;
+        for (Chromosome c : data) {
+            sumCF += c.FunctionValue();
+            if (maxCF < c.FunctionValue()) {
+                maxCF = c.FunctionValue();
+            }
+        }
+        CF_mid = sumCF / data.size();
+    }
+
+    public Population SelectionWheelFortune() {
+        if (sumCF == 0) {
+            calculateAllCF();
+           
+        }
+
+        double[] P = new double[data.size()];
+        double[] N = new double[data.size()];
+        int[] Nreal = new int[data.size()];
+        int NrealSum = 0;
+        for (int i = 0; i < data.size(); i++) {
+            P[i] = data.get(i).FunctionValue() / sumCF;
+            N[i] = data.get(i).FunctionValue() / CF_mid;
+            Nreal[i] = (int) Math.round(N[i]);
+            NrealSum += Nreal[i];
+        }
+       
+        List<Chromosome> newData = new ArrayList<>();
+        for (int i = 0; i < NrealSum; i++) {
+            double rand = Math.random();
+            for (int j = 0; j < data.size(); j++) {
+                double prev = 0.;
+                int c = j;
+                while (c >= 0) {
+                    prev += P[c--];
+                   
+                }
+
+                if (rand < prev) {
+                    newData.add(data.get(j));
+                    break;
+                }
+
+            }
+        }
+
+        return new Population(newData);
     }
     
-    public Population SelectionWheelFortune() {
+    /**
+     * Селекция на основе заданной шкалы
+     * @return Новая популяция
+     */
+    public Population SelectionByScale(){
+        List newdata = new ArrayList<>();
         
-        
+        return new Population(newdata);
     }
+    
+    /**
+     * Турнирная селекция
+     * @return Новая популяция
+     */
+    public Population SelectionTournament(){
+        List newdata = new ArrayList<>();
+        
+        return new Population(newdata);
+    }
+    
+
+    /**
+     * Сортирует популяцию
+     *
+     * @param byMax Если по возрастанию - true, иначе false
+     */
+    public void Sort(boolean byMax) {
+        Comparator c = (Comparator) (Object o1, Object o2) -> {
+            int r;
+            if (((Chromosome) o1).FunctionValue() > ((Chromosome) o2).FunctionValue()) {
+                r = 1;
+            } else if (((Chromosome) o1).FunctionValue() == ((Chromosome) o2).FunctionValue()) {
+                r = 0;
+            } else {
+                r = -1;
+            }
+
+            if (!byMax) {
+                r = -r;
+            }
+            return r;
+
+        };
+
+        data.sort(c);
+    }
+    
+    
 }
