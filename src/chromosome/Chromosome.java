@@ -260,12 +260,14 @@ public class Chromosome extends Object {
 
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
+        for (int i = 0; i <= point[0]; i++) {
+            //left part ==>
+            res1[i] = data[i];
+            res2[i] = chr2.data[i];
 
-        for (int i = 0; i < data.length; i++) {
-            if (i <= point[0]) {
-                res1[i] = data[i];
-                res2[i] = chr2.data[i];
-            } else {
+        }
+        for (int i = point[0]+1; i < data.length; i++) {
+            {
                 for (int j = 0; j < chr2.data.length; j++) {
                     Object obj = chr2.data[j];
                     boolean isIn = false;
@@ -320,16 +322,19 @@ public class Chromosome extends Object {
         int[] point = new int[2];
         point[0] = (int) (Math.random() * (length - 1));
         do {
-            point[0] = (int) (Math.random() * (length - 1));
+            point[1] = (int) (Math.random() * (length - 1));
         } while (point[0] == point[1]);
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
-
+        
         for (int i = 0; i < data.length; i++) {
             if (i <= point[0] || i > point[1]) {
                 res1[i] = data[i];
                 res2[i] = chr2.data[i];
-            } else {
+            }
+        }
+        for (int i = point[0]+1; i <= point[1]; i++) {
+             {
                 for (int j = 0; j < chr2.data.length; j++) {
                     Object obj = chr2.data[j];
                     boolean isIn = false;
@@ -716,8 +721,8 @@ public class Chromosome extends Object {
         Object[] res2 = new Object[data.length];
 
         for (int i = 0; i < data.length; i++) {
-            res1[i] = mask[i] ^ Integer.parseInt((String) data[i], 2);
-            res2[i] = mask[i] ^ Integer.parseInt((String) chr2.data[i], 2);
+            res1[i] = mask[i] ^ Integer.parseInt((String) data[i].toString(), 2);
+            res2[i] = mask[i] ^ Integer.parseInt((String) chr2.data[i].toString(), 2);
         }
 
         data = res1;

@@ -20,7 +20,7 @@ public class EvolAlg {
      */
     public static void main(String[] args) {
        
-        try {
+       /* try {
             LogManager.getLogManager().readConfiguration(
                     EvolAlg.class.getResourceAsStream("/logging.properties"));
         } catch (IOException e) {
@@ -57,13 +57,47 @@ public class EvolAlg {
         
         System.out.print(res.toString());*/
         
-        Population pop = new Population();
+     /*   Population pop = new Population();
         
         pop.genFullPopulation(8).addShotgun(5);
         System.out.println(pop.toString()+"\n________");
         Population newpop = pop.SelectionWheelFortune();
         
-        System.out.println(newpop.toString());
+        System.out.println(newpop.toString());*/
+        
+        //Chromosome xrom = new Chromosome().setData("abcdefgh");
+        //Chromosome xrom2 = new Chromosome().setData("gabecdfh");
+        Chromosome xrom = new Chromosome().setData("abcdefghij");
+        Chromosome xrom2 = new Chromosome().setData("eciadhjbfg");
+        System.out.println("Parent");
+        System.out.println(xrom.toString());
+        System.out.println(xrom2.toString());
+        int point[];
+        //point = xrom.OK_PointThree(xrom2);
+        //point = xrom.OK_SerialOnePoint(xrom2);
+        point = xrom.OK_PartialLinkedOnePoint(xrom2);
+        System.out.println("Children");
+        System.out.println(xrom.toString(point));
+        System.out.println(xrom2.toString(point));
+       
+        /*Object[] m1 = {0,0,0,1,1,0,0,1,0};
+        Object[] m2 = {0,1,0,1,1,0,1,1,1};
+        Chromosome xrom = new Chromosome().setData(m1);
+        Chromosome xrom2 = new Chromosome().setData(m2);
+        int[] m = {0,1,1,1,0,0,0,1,0};
+        System.out.println("Parent");
+        System.out.println(xrom.toString());
+        System.out.println(xrom2.toString());
+        xrom.OK_Universal(xrom2, m);
+        System.out.println("Mask");
+        for(int i=0; i<9;i++) {
+            System.out.print(m[i]+" ");
+        }
+        System.out.println();
+        System.out.println("Children");
+        System.out.println(xrom.toString());
+        System.out.println(xrom2.toString());*/
+        
         
     }
 
