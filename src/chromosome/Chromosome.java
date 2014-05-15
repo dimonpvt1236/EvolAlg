@@ -1307,7 +1307,7 @@ public class Chromosome extends Object {
      * @return Точки разрыва
      */
     public int[] INV_PointTwo(int[] point) {
-        // расчет центрального элемента вокруг которого происходит раворот части хромосомы
+        // расчет центрального элемента вокруг которого происходит разворот части хромосомы
         int center = ((point[1] - point[0] - 1) / 2 + point[0] + 1);
         //System.out.println(center);
         for (int i = point[0] + 1; i <= center; i++) {

@@ -80,7 +80,7 @@ public class EvolAlg {
         System.out.println(xrom.toString(point));
         System.out.println(xrom2.toString(point));
        */
-        Object[] m1 = {1,2,3,4,5,6,7,8,9,10};
+     /*   Object[] m1 = {1,2,3,4,5,6,7,8,9,10};
         Object[] m2 = {5,3,9,1,4,8,10,2,6,7};
         Chromosome xrom = new Chromosome().setData(m1);
         Chromosome xrom2 = new Chromosome().setData(m2);
@@ -90,16 +90,61 @@ public class EvolAlg {
         System.out.println(xrom2.toString());
         //xrom.OK_Universal(xrom2, m);
         xrom.OK_cicle(xrom2);
-       /* System.out.println("Mask");
-        for(int i=0; i<9;i++) {
-            System.out.print(m[i]+" ");
-        }*/
+       // System.out.println("Mask");
+       // for(int i=0; i<9;i++) {
+       //     System.out.print(m[i]+" ");
+      //  }
         System.out.println();
         System.out.println("Children");
         System.out.println(xrom.toString());
         System.out.println(xrom2.toString());
+        */
+     /*   
+        Chromosome xrom = new Chromosome().setData("0001110101");
+        System.out.println("FibanacciTwoPoint");
+        System.out.println("Parent");
+        System.out.println(xrom.toString());
+        int point[];
+        point = xrom.MT_FibanacciTwoPoint();
+        System.out.println("Children");
+        System.out.println(xrom.toString(point));
         
+        Chromosome xrom2 = new Chromosome().setData("0101010001");
+        System.out.println("GoldTwoPoint");
+        System.out.println("Parent");
+        System.out.println(xrom2.toString());
+        int point2[];
+        point2 = xrom2.MT_GoldTwoPoint();
+        System.out.println("Children");
+        System.out.println(xrom2.toString(point2));
         
+        Chromosome xrom2 = new Chromosome().setData("0101010001");
+        System.out.println("Inversion");
+        System.out.println("Parent");
+        System.out.println(xrom2.toString());
+        xrom2.Inversion();
+        System.out.println("Children");
+        System.out.println(xrom2.toString());
+        
+        Chromosome xrom1 = new Chromosome().setData("0101010001");
+        System.out.println("Inversion Two Point");
+        System.out.println("Parent");
+        System.out.println(xrom1.toString());
+        int point2[];
+        point2 = xrom1.INV_PointTwo();
+        System.out.println("Children");
+        System.out.println(xrom1.toString(point2));*/
+        
+        Chromosome xrom1 = new Chromosome().setData("abcdefgh");
+        Chromosome xrom2 = new Chromosome().setData("qwrtuiop");
+        System.out.println("Parent");
+        System.out.println(xrom1.toString());
+        System.out.println(xrom2.toString());
+        int point2[];
+        point2 = xrom1.Translocation(xrom2);
+        System.out.println("Children");
+        System.out.println(xrom1.toString(point2));
+        System.out.println(xrom2.toString(point2));
     }
 
 }
