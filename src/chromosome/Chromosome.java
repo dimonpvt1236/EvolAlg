@@ -413,12 +413,14 @@ public class Chromosome extends Object {
                 if (positionOfValue1 == -1) {
                     res1[i] = curValue1;
                 } else {
-                    curValue1 = chr2.data[pos1];
+                    curValue1 = data[pos1];
                     positionOfValue1 = Search.LinearSearch(res1, curValue1);
                     if (positionOfValue1 == -1) {
                         res1[i] = curValue1;
                     } else {
-                        pos1++;
+                        //pos1++;
+                        res1[i] = data[positionOfValue1];
+                        positionOfValue1 = -1;
                     }
                 }
             }
@@ -437,12 +439,14 @@ public class Chromosome extends Object {
                 if (positionOfValue2 == -1) {
                     res2[i] = curValue2;
                 } else {
-                    curValue2 = data[pos2];
+                    curValue2 = chr2.data[pos2];
                     positionOfValue2 = Search.LinearSearch(res2, curValue2);
                     if (positionOfValue2 == -1) {
                         res2[i] = curValue2;
                     } else {
-                        pos2++;
+                        //pos2++;
+                        res2[i] = chr2.data[positionOfValue2];
+                        positionOfValue2 = -1;
                     }
                 }
             }
@@ -484,7 +488,7 @@ public class Chromosome extends Object {
 
         }
         for (int i = points[1] + 1; i < data.length; i++) {
-            //left part <==
+            //right part <==
             //1
             Object curValue1;
             int positionOfValue1 = 0;
@@ -499,12 +503,14 @@ public class Chromosome extends Object {
                 if (positionOfValue1 == -1) {
                     res1[i] = curValue1;
                 } else {
-                    curValue1 = chr2.data[pos1];
+                    curValue1 = data[pos1];
                     positionOfValue1 = Search.LinearSearch(res1, curValue1);
                     if (positionOfValue1 == -1) {
                         res1[i] = curValue1;
                     } else {
-                        pos1++;
+                        //pos1++;
+                        res1[i] = data[positionOfValue1];
+                        positionOfValue1 = -1;
                     }
                 }
             }
@@ -523,12 +529,14 @@ public class Chromosome extends Object {
                 if (positionOfValue2 == -1) {
                     res2[i] = curValue2;
                 } else {
-                    curValue2 = data[pos2];
+                    curValue2 = chr2.data[pos2];
                     positionOfValue2 = Search.LinearSearch(res2, curValue2);
                     if (positionOfValue2 == -1) {
                         res2[i] = curValue2;
                     } else {
-                        pos2++;
+                        //pos2++;
+                        res2[i] = chr2.data[positionOfValue1];
+                        positionOfValue1 = -1;
                     }
                 }
             }
@@ -550,12 +558,14 @@ public class Chromosome extends Object {
                 if (positionOfValue1 == -1) {
                     res1[i] = curValue1;
                 } else {
-                    curValue1 = chr2.data[pos1];
+                    curValue1 = data[pos1];
                     positionOfValue1 = Search.LinearSearch(res1, curValue1);
                     if (positionOfValue1 == -1) {
                         res1[i] = curValue1;
                     } else {
-                        pos1++;
+                        //pos1++;
+                        res1[i] = data[positionOfValue1];
+                        positionOfValue1 = -1;
                     }
                 }
             }
@@ -574,12 +584,14 @@ public class Chromosome extends Object {
                 if (positionOfValue2 == -1) {
                     res2[i] = curValue2;
                 } else {
-                    curValue2 = data[pos2];
+                    curValue2 = chr2.data[pos2];
                     positionOfValue2 = Search.LinearSearch(res2, curValue2);
                     if (positionOfValue2 == -1) {
                         res2[i] = curValue2;
                     } else {
-                        pos2++;
+                        //pos2++;
+                        res2[i] = chr2.data[positionOfValue2];
+                        positionOfValue2 = -1;
                     }
                 }
             }
