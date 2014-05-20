@@ -6,13 +6,10 @@
 package chromosome;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,10 +21,9 @@ public class Population {
     private int length;
     private int chromoLength;
     private double sumCF;
-    private double maxCF;
+    private double maxCF, minCF;
     private double CF_mid;
-  
-    
+
     public Population() {
     }
 
@@ -66,6 +62,15 @@ public class Population {
 
     public List<Chromosome> getData() {
         return data;
+    }
+
+    public Population adjustPopulation(Population p2) {
+        for (Chromosome c : p2.data) {
+            if (!this.data.contains(c)) {
+                this.data.add(c);
+            }
+        }
+        return this;
     }
 
     @Override
@@ -185,10 +190,14 @@ public class Population {
     public void calculateAllCF() {
         sumCF = 0;
         maxCF = 0;
+        minCF = Double.MAX_VALUE;
         for (Chromosome c : data) {
             sumCF += c.FunctionValue();
-            if (maxCF < c.FunctionValue()) {
-                maxCF = c.FunctionValue();
+            if (maxCF < c.getCF()) {
+                maxCF = c.getCF();
+            }
+            if (minCF > c.getCF()) {
+                minCF = c.getCF();
             }
         }
         CF_mid = sumCF / data.size();
@@ -197,7 +206,7 @@ public class Population {
     public Population SelectionWheelFortune() {
         if (sumCF == 0) {
             calculateAllCF();
-           
+
         }
 
         double[] P = new double[data.size()];
@@ -210,7 +219,7 @@ public class Population {
             Nreal[i] = (int) Math.round(N[i]);
             NrealSum += Nreal[i];
         }
-       
+
         List<Chromosome> newData = new ArrayList<>();
         for (int i = 0; i < NrealSum; i++) {
             double rand = Math.random();
@@ -219,7 +228,7 @@ public class Population {
                 int c = j;
                 while (c >= 0) {
                     prev += P[c--];
-                   
+
                 }
 
                 if (rand < prev) {
@@ -232,27 +241,81 @@ public class Population {
 
         return new Population(newData);
     }
-    
+
     /**
      * Селекция на основе заданной шкалы
-     * @return Новая популяция
+     *
+     * @param scale Массив процентов разделяющих на группы (0.00<x<1.00) для
+     * разбиения на scale.length+1 групп. Т.е. если массив содержит 3 значения.
+     * то это разобьет на 4 группы, где первые 3 получат заданные проценты, а
+     * последняя то что останется @param percentage Массив процентов
+     * вероятностей, размер этого массива на 1 больше чем размер scale @return
+     * Новая популяция
      */
-    public Population SelectionByScale(){
+    public Population SelectionByScale(double[] scale, double[] percentage) {
+        double sum = 0;
+        for (double f : scale) {
+            sum += f;
+        }
+        if (sum >= 1) {
+            System.err.println("Ошибка шкалы");
+            return null;
+        }
+        if (scale.length != percentage.length - 1) {
+            System.err.println("Ошибка несоответствия длин массивов шкалы и вероятностей");
+        }
+
         List newdata = new ArrayList<>();
-        
+
+        List[] groups = new List[scale.length + 1];
+        for (int i = 0; i < groups.length; i++) {
+            groups[i] = new ArrayList<>();
+        }
+
+        this.calculateAllCF();
+
+        //разбиваем на группы
+        for (Chromosome c : this.data) {
+            for (int j = 0; j < scale.length + 1; j++) {
+                double P = 0;
+                int a = j;
+                if (j != scale.length) {
+                    while (a >= 0) {
+                        P += scale[a--];
+                    }
+                } else {
+                    P = 1.0;
+                }
+                if ((c.getCF() + minCF) / (maxCF - minCF) <= P) {
+                    groups[j].add(c);
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < groups.length; i++) {
+            List<Chromosome> l = groups[i];
+            for (Chromosome c : l) {
+                double rand = Math.random();
+                if (rand <= percentage[i]) {
+                    newdata.add(c);
+                }
+            }
+        }
+
         return new Population(newdata);
     }
-    
+
     /**
      * Турнирная селекция
+     *
      * @return Новая популяция
      */
-    public Population SelectionTournament(){
+    public Population SelectionTournament() {
         List newdata = new ArrayList<>();
-        
+
         return new Population(newdata);
     }
-    
 
     /**
      * Сортирует популяцию
@@ -279,6 +342,5 @@ public class Population {
 
         data.sort(c);
     }
-    
-    
+
 }

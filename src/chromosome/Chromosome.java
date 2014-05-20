@@ -266,7 +266,7 @@ public class Chromosome extends Object {
             res2[i] = chr2.data[i];
 
         }
-        for (int i = point[0]+1; i < data.length; i++) {
+        for (int i = point[0] + 1; i < data.length; i++) {
             {
                 for (int j = 0; j < chr2.data.length; j++) {
                     Object obj = chr2.data[j];
@@ -326,15 +326,15 @@ public class Chromosome extends Object {
         } while (point[0] == point[1]);
         Object[] res1 = new Object[data.length];
         Object[] res2 = new Object[data.length];
-        
+
         for (int i = 0; i < data.length; i++) {
             if (i <= point[0] || i > point[1]) {
                 res1[i] = data[i];
                 res2[i] = chr2.data[i];
             }
         }
-        for (int i = point[0]+1; i <= point[1]; i++) {
-             {
+        for (int i = point[0] + 1; i <= point[1]; i++) {
+            {
                 for (int j = 0; j < chr2.data.length; j++) {
                     Object obj = chr2.data[j];
                     boolean isIn = false;
@@ -1257,7 +1257,7 @@ public class Chromosome extends Object {
         int center = ((data.length - point[0] - 1) / 2 + point[0] + 1);
         //System.out.println(center);
         for (int i = point[0] + 1; i < center; i++) {
-          //  System.out.println(i);
+            //  System.out.println(i);
             //  System.out.println(data.length-i+point[0]);
             // swap
             Object d = data[i];
