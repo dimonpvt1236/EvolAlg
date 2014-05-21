@@ -7,6 +7,7 @@ package evolalg;
 
 import chromosome.Chromosome;
 import chromosome.Population;
+import utils.GeneticAlgorithm;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,14 +148,16 @@ public class EvolAlg {
          */
         //</editor-fold>
         //<editor-fold desc="Отладка для шкальной селекции">
-        Population p = new Population().genFullPopulation(10);
+       /* Population p = new Population().genFullPopulation(10);
 
         double[] a1 = {.5, .2}, //шкала групп
                 a2 = {.5, .3, .01}; // коэффициент попадания из группы
         System.out.println(p.getLength() + "\n-----------");
         Population p2 = p.SelectionByScale(a1, a2);
         System.out.println(p2.getLength());
-
+           */
+        
+        GeneticAlgorithm.SimpleGA(50, 70, 20);
         //</editor-fold>
     }
 

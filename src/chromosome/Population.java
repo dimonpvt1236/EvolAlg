@@ -22,6 +22,22 @@ public class Population {
     private int chromoLength;
     private double sumCF;
     private double maxCF, minCF;
+
+    public double getSumCF() {
+        return sumCF;
+    }
+
+    public double getMaxCF() {
+        return maxCF;
+    }
+
+    public double getMinCF() {
+        return minCF;
+    }
+
+    public double getCF_mid() {
+        return CF_mid;
+    }
     private double CF_mid;
 
     public Population() {
@@ -69,6 +85,13 @@ public class Population {
             if (!this.data.contains(c)) {
                 this.data.add(c);
             }
+        }
+        return this;
+    }
+    
+    public Population adjustPopulationD(Population p2) {
+        for (Chromosome c : p2.data) {
+            this.data.add(c);
         }
         return this;
     }
@@ -203,12 +226,12 @@ public class Population {
         CF_mid = sumCF / data.size();
     }
 
-    public Population SelectionWheelFortune() {
+    public Population SelectionWheelFortune(int count) {
         if (sumCF == 0) {
             calculateAllCF();
 
         }
-
+        
         double[] P = new double[data.size()];
         double[] N = new double[data.size()];
         int[] Nreal = new int[data.size()];
@@ -219,7 +242,10 @@ public class Population {
             Nreal[i] = (int) Math.round(N[i]);
             NrealSum += Nreal[i];
         }
-
+        if (count!=0) {
+            NrealSum = count;
+        }
+        
         List<Chromosome> newData = new ArrayList<>();
         for (int i = 0; i < NrealSum; i++) {
             double rand = Math.random();
@@ -248,7 +274,8 @@ public class Population {
      * @param scale Массив процентов разделяющих на группы (0.00<x<1.00) для
      * разбиения на scale.length+1 групп. Т.е. если массив содержит 3 значения.
      * то это разобьет на 4 группы, где первые 3 получат заданные проценты, а
-     * последняя то что останется @param percentage Массив процентов
+     * последняя то что останется 
+     * @param percentage Массив процентов
      * вероятностей, размер этого массива на 1 больше чем размер scale @return
      * Новая популяция
      */

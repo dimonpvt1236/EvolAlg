@@ -743,6 +743,7 @@ public class Chromosome extends Object {
 
     public double FunctionValue() {
         cf = BinToDec();
+        cf = 3*cf*cf*cf-2*cf+5;
         return cf;
     }
 
