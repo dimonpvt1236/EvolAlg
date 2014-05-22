@@ -271,6 +271,7 @@ public class Population {
     /**
      * Селекция на основе заданной шкалы
      *
+     * @param  Массив процентов разделяющих на группы (0.00<x<1.00) для
      * @param scale Массив процентов разделяющих на группы (0.00<x<1.00) для
      * разбиения на scale.length+1 групп. Т.е. если массив содержит 3 значения.
      * то это разобьет на 4 группы, где первые 3 получат заданные проценты, а
@@ -279,7 +280,7 @@ public class Population {
      * вероятностей, размер этого массива на 1 больше чем размер scale @return
      * Новая популяция
      */
-    public Population SelectionByScale(double[] scale, double[] percentage) {
+    public Population SelectionByScale(int n, double[] scale, double[] percentage) {
         double sum = 0;
         for (double f : scale) {
             sum += f;
@@ -323,9 +324,11 @@ public class Population {
         for (int i = 0; i < groups.length; i++) {
             List<Chromosome> l = groups[i];
             for (Chromosome c : l) {
-                double rand = Math.random();
-                if (rand <= percentage[i]) {
-                    newdata.add(c);
+                if (newdata.size()<n) {
+                    double rand = Math.random();
+                    if (rand <= percentage[i]) {
+                        newdata.add(c);
+                    }
                 }
             }
         }

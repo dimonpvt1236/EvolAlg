@@ -148,16 +148,19 @@ public class EvolAlg {
          */
         //</editor-fold>
         //<editor-fold desc="Отладка для шкальной селекции">
-       /* Population p = new Population().genFullPopulation(10);
+       /* Population p = new Population().genFullPopulation(4);
 
         double[] a1 = {.5, .2}, //шкала групп
-                a2 = {.5, .3, .01}; // коэффициент попадания из группы
-        System.out.println(p.getLength() + "\n-----------");
+                a2 = {.5, .3, .1}; // коэффициент попадания из группы
+        System.out.println(p.toString());
         Population p2 = p.SelectionByScale(a1, a2);
-        System.out.println(p2.getLength());
-           */
-        
-        GeneticAlgorithm.SimpleGA(50, 70, 20);
+        System.out.println(p2.toString());
+           
+        */
+        Chromosome xrom1;
+        //xrom1 = GeneticAlgorithm.SimpleGA_Golberga(50, 70, 20);
+        xrom1 = GeneticAlgorithm.SimpleGA_Devica(100000, 70, 40);
+        System.out.println(xrom1.toString());
         //</editor-fold>
     }
 

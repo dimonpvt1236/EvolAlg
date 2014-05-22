@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package utils;
-
+import chromosome.Chromosome;
+import java.util.List;
 /**
  *
  * @author Admin
@@ -19,5 +20,14 @@ public class Search {
             }
         }
         return r;
+    }
+    
+    public static Chromosome LinearSearch(List<Chromosome> data, double key) {
+        for (Chromosome a : data) {
+            if ((a.getCF()-key) <= 0.000000000001) {
+                return a;
+            }
+        }
+        return null;
     }
 }
