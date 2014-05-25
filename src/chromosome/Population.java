@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author Admin
  */
-public class Population {
+public class Population implements Cloneable {
 
     private List<Chromosome> data;
     private int length;
@@ -95,6 +95,12 @@ public class Population {
         }
         return this;
     }
+    
+    @Override
+     public Population clone() throws CloneNotSupportedException{
+         Population obj = (Population)super.clone();
+         return obj;
+     }
 
     @Override
     public String toString() {

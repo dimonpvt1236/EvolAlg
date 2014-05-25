@@ -8,7 +8,9 @@ package evolalg;
 import chromosome.Chromosome;
 import chromosome.Population;
 import utils.GeneticAlgorithm;
+import utils.Statistics;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public class EvolAlg {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CloneNotSupportedException {
         //<editor-fold desc="пример для логгера">
        /* try {
          LogManager.getLogManager().readConfiguration(
@@ -158,9 +160,54 @@ public class EvolAlg {
            
         */
         Chromosome xrom1;
-        //xrom1 = GeneticAlgorithm.SimpleGA_Golberga(50, 70, 20);
-        xrom1 = GeneticAlgorithm.SimpleGA_Devica(100000, 70, 40);
-        System.out.println(xrom1.toString());
+        
+        Population p = new Population().genFullPopulation(6);
+        p.addShotgun(7);
+        List<Statistics> st = new ArrayList<>();
+        
+        for (int i=0; i<10; i++) {
+        
+            Statistics stat = new Statistics();
+            int count=50;
+            for (int j=0; j<count; j++) {
+                // создание объекта статистики и клонировние стартовой популяции
+                Statistics stat_temp = new Statistics();
+                Population temp = p.clone();
+                
+                // выполнение ГА
+                stat_temp.setStart(new Date().getTime());
+                GeneticAlgorithm.SimpleGA_Golberga(temp, 10, 10+i*8, 20, stat_temp);
+                stat_temp.setEnd(new Date().getTime());
+                stat_temp.setTimeResult(stat_temp.getEnd()-stat_temp.getStart());
+                
+                // подсчет статистики по одной секции
+                stat.setCountK(stat.getCountK()+stat_temp.getCountK());
+                stat.setCountM(stat.getCountM()+stat_temp.getCountM());
+                stat.setpK(stat_temp.getpK());
+                stat.setpM(stat_temp.getpM());
+                stat.setTimeResult(stat.getTimeResult()+stat_temp.getTimeResult());
+                stat.setStartPop(stat_temp.getStartPop());
+                stat.setResultMID(stat.getResultMID()+stat_temp.getResult());
+                if (stat_temp.getResult()>stat.getResultMAX()) {
+                    stat.setResultMAX(stat_temp.getResult());
+                }
+            }
+            
+            // расчет средних значений по одной секции
+            stat.setCountK(stat.getCountK()/count);
+            stat.setCountM(stat.getCountM()/count);
+            stat.setTimeResult(stat.getTimeResult()/count);
+            stat.setResultMID(stat.getResultMID()/count);
+            
+            // накопление данных статистики
+            st.add(stat);
+        } 
+        
+        for (Statistics s : st) {
+           System.out.println(s.toString()); 
+        }
+        //xrom1 = GeneticAlgorithm.SimpleGA_Devica(1000, 70, 40);
+        //System.out.println(xrom1.toString());
         //</editor-fold>
     }
 

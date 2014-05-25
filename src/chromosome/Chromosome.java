@@ -15,7 +15,7 @@ import utils.Variant;
  *
  * @author Admin
  */
-public class Chromosome extends Object {
+public class Chromosome extends Object implements Cloneable {
 
     private int length;
     private double cf;
@@ -65,7 +65,13 @@ public class Chromosome extends Object {
     public Object[] getData() {
         return data;
     }
-
+    
+    @Override
+     public Chromosome clone() throws CloneNotSupportedException{
+         Chromosome obj = (Chromosome)super.clone();
+         return obj;
+     }
+    
     @Override
     public String toString() {
         String str = "";
@@ -743,7 +749,8 @@ public class Chromosome extends Object {
 
     public double FunctionValue() {
         cf = BinToDec();
-        cf = 3*cf*cf*cf-2*cf+5;
+        //cf = 3*cf*cf*cf-2*cf+5;
+        cf = cf*cf*cf-30*cf*cf+255*cf+1;
         return cf;
     }
 
