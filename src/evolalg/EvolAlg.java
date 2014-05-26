@@ -23,6 +23,7 @@ public class EvolAlg {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws CloneNotSupportedException {
+             
         //<editor-fold desc="пример для логгера">
        /* try {
          LogManager.getLogManager().readConfiguration(
@@ -159,7 +160,16 @@ public class EvolAlg {
         System.out.println(p2.toString());
            
         */
-        Chromosome xrom1;
+        //</editor-fold>
+        //<editor-fold desc="Отладка для турнирной селекции">
+        Population pop=new Population().genFullPopulation(10);
+        pop.getData().remove(0);
+        Population p_result = pop.SelectionTournament(100);
+        p_result.Sort(true);
+        System.out.println(p_result.toStringWithCFs());
+        //</editor-fold>
+        //<editor-fold desc="Отладка для 5й лабы">
+        /*Chromosome xrom1;
         
         Population p = new Population().genFullPopulation(6);
         p.addShotgun(7);
@@ -206,8 +216,12 @@ public class EvolAlg {
         for (Statistics s : st) {
            System.out.println(s.toString()); 
         }
+                
+        */
+        
         //xrom1 = GeneticAlgorithm.SimpleGA_Devica(1000, 70, 40);
         //System.out.println(xrom1.toString());
+        
         //</editor-fold>
     }
 

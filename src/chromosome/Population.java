@@ -6,6 +6,8 @@
 package chromosome;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -112,6 +114,15 @@ public class Population implements Cloneable {
         return str;
     }
 
+    public String toStringWithCFs() {
+        String str = "";
+        for (Chromosome c : data) {
+            str += c.toString() + " = " + c.getCF() + "\n";
+        }
+        str += "Total: " + data.size() + " chromosome(s)\n";
+        return str;
+    }
+    
     @Override
     public boolean equals(Object p) {
         return p.hashCode() == this.hashCode() && p.getClass() == Population.class;
@@ -277,14 +288,14 @@ public class Population implements Cloneable {
     /**
      * Селекция на основе заданной шкалы
      *
-     * @param  Массив процентов разделяющих на группы (0.00<x<1.00) для
+     * @param n предел
      * @param scale Массив процентов разделяющих на группы (0.00<x<1.00) для
      * разбиения на scale.length+1 групп. Т.е. если массив содержит 3 значения.
      * то это разобьет на 4 группы, где первые 3 получат заданные проценты, а
      * последняя то что останется 
      * @param percentage Массив процентов
      * вероятностей, размер этого массива на 1 больше чем размер scale @return
-     * Новая популяция
+     * @return Новая популяция
      */
     public Population SelectionByScale(int n, double[] scale, double[] percentage) {
         double sum = 0;
@@ -345,12 +356,47 @@ public class Population implements Cloneable {
     /**
      * Турнирная селекция
      *
+     * @param limit Максимальное число хромосом в возвращаемой популяции
      * @return Новая популяция
      */
-    public Population SelectionTournament() {
-        List newdata = new ArrayList<>();
-
-        return new Population(newdata);
+    public Population SelectionTournament(int limit) {
+        List result = new ArrayList(data);
+        
+        //calc all CF
+        calculateAllCF();
+        
+        List newdata;
+                
+        boolean first = true;
+        do{
+            newdata = new ArrayList(result);
+            result.clear();
+        //shuffle            
+        Collections.shuffle(newdata);
+        //init pairs array
+        Chromosome [][] pairs = new Chromosome[newdata.size()/2+newdata.size()%2][2];
+        int i=0;
+        //fill pairs array
+        for (Iterator<Chromosome> it = newdata.iterator(); it.hasNext();i++) {
+            
+            pairs[i][0]=it.next();
+            if(it.hasNext())pairs[i][1]=it.next();
+        }
+        //play CF game in each pair, if in pair there is only one chromosome - its automatically wins
+        for(i=0;i<pairs.length;i++){
+            if(pairs[i][1]==null){
+                result.add(pairs[i][0]);
+            }
+            else{
+                if(pairs[i][0].getCF()>pairs[i][1].getCF())result.add(pairs[i][0]);
+                else result.add(pairs[i][1]);
+            }
+            
+        }
+        if(first)first=false;
+        }while(result.size()>limit);
+        
+        return new Population(result);
     }
 
     /**

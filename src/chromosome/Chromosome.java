@@ -750,7 +750,7 @@ public class Chromosome extends Object implements Cloneable {
     public double FunctionValue() {
         cf = BinToDec();
         //cf = 3*cf*cf*cf-2*cf+5;
-        cf = cf*cf*cf-30*cf*cf+255*cf+1;
+        //cf = cf*cf*cf-30*cf*cf+255*cf+1;
         return cf;
     }
 
