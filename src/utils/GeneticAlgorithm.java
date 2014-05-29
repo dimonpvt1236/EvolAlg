@@ -29,7 +29,8 @@ public class GeneticAlgorithm {
      */
     public static Chromosome SimpleGA_Golberga(int n, int p_k, int p_m) {
         Population p2;
-        Population p = new Population().genFullPopulation(4);
+        Population p = new Population().genFullPopulation(6);
+        p.addShotgun(20);
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
@@ -180,8 +181,8 @@ public class GeneticAlgorithm {
      */
     public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m) {
         Population p2;
-        Population p = new Population().genFullPopulation(4);
-        p.addShotgun(60);
+        Population p = new Population().genFullPopulation(6);
+        p.addShotgun(20);
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
