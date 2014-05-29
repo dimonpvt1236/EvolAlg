@@ -162,13 +162,21 @@ public class EvolAlg {
         */
         //</editor-fold>
         //<editor-fold desc="Отладка для турнирной селекции">
-        Population pop=new Population().genFullPopulation(10);
+      /*  Population pop=new Population().genFullPopulation(10);
         pop.getData().remove(0);
         Population p_result = pop.SelectionTournament(100);
         p_result.Sort(true);
         System.out.println(p_result.toStringWithCFs());
+        */
         //</editor-fold>
         //<editor-fold desc="Отладка для 5й лабы">
+            Chromosome xrom1;
+            //xrom1 = GeneticAlgorithm.SimpleGA_Golberga(50, 70, 20);
+            xrom1 = GeneticAlgorithm.SimpleGA_Devica(1000, 70, 20);
+            System.out.println(xrom1.toString());
+        
+        //<editor-fold>
+        //<editor-fold desc="Отладка для 6й лабы">
         /*Chromosome xrom1;
         
         Population p = new Population().genFullPopulation(6);
@@ -218,9 +226,6 @@ public class EvolAlg {
         }
                 
         */
-        
-        //xrom1 = GeneticAlgorithm.SimpleGA_Devica(1000, 70, 40);
-        //System.out.println(xrom1.toString());
         
         //</editor-fold>
     }
