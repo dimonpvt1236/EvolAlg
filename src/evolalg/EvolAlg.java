@@ -170,17 +170,18 @@ public class EvolAlg {
         */
         //</editor-fold>
         //<editor-fold desc="Отладка для 5й лабы">
-            Chromosome xrom1;
+          /*  Chromosome xrom1;
             //xrom1 = GeneticAlgorithm.SimpleGA_Golberga(50, 70, 20);
             xrom1 = GeneticAlgorithm.SimpleGA_Devica(1000, 70, 20);
             System.out.println(xrom1.toString());
-        
-        //<editor-fold>
+        */
+        //</editor-fold>
         //<editor-fold desc="Отладка для 6й лабы">
-        /*Chromosome xrom1;
+        Chromosome xrom1;
         
         Population p = new Population().genFullPopulation(6);
-        p.addShotgun(7);
+        p.addShotgun(5);
+        System.out.println(p.getLength() + "\n-----------");
         List<Statistics> st = new ArrayList<>();
         
         for (int i=0; i<10; i++) {
@@ -194,7 +195,7 @@ public class EvolAlg {
                 
                 // выполнение ГА
                 stat_temp.setStart(new Date().getTime());
-                GeneticAlgorithm.SimpleGA_Golberga(temp, 10, 10+i*8, 20, stat_temp);
+                GeneticAlgorithm.SimpleGA_Golberga(temp, 50, 10+i*8, 20, stat_temp);
                 stat_temp.setEnd(new Date().getTime());
                 stat_temp.setTimeResult(stat_temp.getEnd()-stat_temp.getStart());
                 
@@ -225,7 +226,7 @@ public class EvolAlg {
            System.out.println(s.toString()); 
         }
                 
-        */
+        
         
         //</editor-fold>
     }
