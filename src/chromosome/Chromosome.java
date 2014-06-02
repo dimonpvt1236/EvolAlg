@@ -809,7 +809,7 @@ public class Chromosome extends Object implements Cloneable {
         
         cf=0;
         //расчет целевой функции
-        //TODO: fix, incorrect calculation logic
+       
         Set<Integer> click = new HashSet<>();
         for(int i=0;i<data.length;i++){
             if(data[i]==(Object)1){
@@ -821,7 +821,7 @@ public class Chromosome extends Object implements Cloneable {
         for(int i:click){
             if(!incorrect)
                 for(int j:click_cpy)
-                    if(!(i==j || graph[i][j]>0 )){;incorrect = true;break;}
+                    if(!(i==j || graph[i][j]>0 )){incorrect = true;break;}
         }
         
         if(!incorrect){for(Object o:data)cf+=(int)o;}

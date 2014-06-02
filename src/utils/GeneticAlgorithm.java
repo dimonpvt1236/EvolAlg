@@ -182,7 +182,7 @@ public class GeneticAlgorithm {
     public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m,int pop_len) {
         Population p2;
         Population p = new Population().genFullPopulation(pop_len);
-        p.addShotgun(20);
+        p.addShotgun(35);
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
@@ -230,7 +230,7 @@ public class GeneticAlgorithm {
             p.adjustPopulationD(p2);
             
             p.calculateAllCF();
-            p = p.SelectionWheelFortune(10);
+            p = p.SelectionWheelFortune(40);
             
             p.calculateAllCF();
             System.out.println("Lenght "+p.getLength());

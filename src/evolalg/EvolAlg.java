@@ -179,49 +179,49 @@ public class EvolAlg {
         //<editor-fold desc="Отладка для 6й лабы">
         Chromosome xrom1;
         
-        Population p = new Population().genFullPopulation(8);
-        p.addShotgun(5);
+        Population p = new Population().genFullPopulation(11);
+        p.addShotgun(20);
         System.out.println(p.getLength() + "\n-----------");
         List<Statistics> st = new ArrayList<>();
         List<Chromosome> bests = new ArrayList<>();
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<50; i++) {
         
-            Statistics stat = new Statistics();
-            int count=50;
+            //Statistics stat = new Statistics();
+            int count=1;
             for (int j=0; j<count; j++) {
                 // создание объекта статистики и клонировние стартовой популяции
-                Statistics stat_temp = new Statistics();
+               // Statistics stat_temp = new Statistics();
                 Population temp = p.clone();
                 
                 // выполнение ГА
-                stat_temp.setStart(new Date().getTime());
-                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(5, 10+i*8, 20, 8);
-                stat_temp.setEnd(new Date().getTime());
-                stat_temp.setTimeResult(stat_temp.getEnd()-stat_temp.getStart());
+               // stat_temp.setStart(new Date().getTime());
+                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(1000, 10+i*8, 20, 11);
+                //stat_temp.setEnd(new Date().getTime());
+                //stat_temp.setTimeResult(stat_temp.getEnd()-stat_temp.getStart());
                 
                 // подсчет статистики по одной секции
-                stat.setCountK(stat.getCountK()+stat_temp.getCountK());
-                stat.setCountM(stat.getCountM()+stat_temp.getCountM());
-                stat.setpK(stat_temp.getpK());
-                stat.setpM(stat_temp.getpM());
-                stat.setTimeResult(stat.getTimeResult()+stat_temp.getTimeResult());
-                stat.setStartPop(stat_temp.getStartPop());
-                stat.setResultMID(stat.getResultMID()+stat_temp.getResult());
-                if (stat_temp.getResult()>stat.getResultMAX()) {
-                    stat.setResultMAX(stat_temp.getResult());
-                }
+//                stat.setCountK(stat.getCountK()+stat_temp.getCountK());
+//                stat.setCountM(stat.getCountM()+stat_temp.getCountM());
+//                stat.setpK(stat_temp.getpK());
+//                stat.setpM(stat_temp.getpM());
+//                stat.setTimeResult(stat.getTimeResult()+stat_temp.getTimeResult());
+//                stat.setStartPop(stat_temp.getStartPop());
+//                stat.setResultMID(stat.getResultMID()+stat_temp.getResult());
+//                if (stat_temp.getResult()>stat.getResultMAX()) {
+//                    stat.setResultMAX(stat_temp.getResult());
+//                }
                 
                 if(best!=null)bests.add(best);
             }
             
             // расчет средних значений по одной секции
-            stat.setCountK(stat.getCountK()/count);
-            stat.setCountM(stat.getCountM()/count);
-            stat.setTimeResult(stat.getTimeResult()/count);
-            stat.setResultMID(stat.getResultMID()/count);
-            
+//            stat.setCountK(stat.getCountK()/count);
+//            stat.setCountM(stat.getCountM()/count);
+//            stat.setTimeResult(stat.getTimeResult()/count);
+//            stat.setResultMID(stat.getResultMID()/count);
+//            
             // накопление данных статистики
-            st.add(stat);
+            //st.add(stat);
         } 
         /*
         for (Statistics s : st) {
@@ -232,7 +232,7 @@ public class EvolAlg {
         for(Chromosome c:bests)if(c!=null && c.getCF()>bestofthebest.getCF())bestofthebest=c;
         
         if(bestofthebest.getData()!=null)System.out.println(bestofthebest.toString()+ " : " + bestofthebest.getCF());
-                
+        else System.out.println("null");
         
         
         //</editor-fold>
