@@ -179,9 +179,9 @@ public class GeneticAlgorithm {
      * 
      * @return Хромосома - лучшее решение
      */
-    public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m) {
+    public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m,int pop_len) {
         Population p2;
-        Population p = new Population().genFullPopulation(6);
+        Population p = new Population().genFullPopulation(pop_len);
         p.addShotgun(20);
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();

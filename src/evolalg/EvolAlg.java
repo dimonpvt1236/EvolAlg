@@ -179,11 +179,11 @@ public class EvolAlg {
         //<editor-fold desc="Отладка для 6й лабы">
         Chromosome xrom1;
         
-        Population p = new Population().genFullPopulation(6);
+        Population p = new Population().genFullPopulation(8);
         p.addShotgun(5);
         System.out.println(p.getLength() + "\n-----------");
         List<Statistics> st = new ArrayList<>();
-        
+        List<Chromosome> bests = new ArrayList<>();
         for (int i=0; i<10; i++) {
         
             Statistics stat = new Statistics();
@@ -195,7 +195,7 @@ public class EvolAlg {
                 
                 // выполнение ГА
                 stat_temp.setStart(new Date().getTime());
-                GeneticAlgorithm.SimpleGA_Golberga(temp, 50, 10+i*8, 20, stat_temp);
+                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(5, 10+i*8, 20, 8);
                 stat_temp.setEnd(new Date().getTime());
                 stat_temp.setTimeResult(stat_temp.getEnd()-stat_temp.getStart());
                 
@@ -210,6 +210,8 @@ public class EvolAlg {
                 if (stat_temp.getResult()>stat.getResultMAX()) {
                     stat.setResultMAX(stat_temp.getResult());
                 }
+                
+                if(best!=null)bests.add(best);
             }
             
             // расчет средних значений по одной секции
@@ -221,10 +223,15 @@ public class EvolAlg {
             // накопление данных статистики
             st.add(stat);
         } 
-        
+        /*
         for (Statistics s : st) {
            System.out.println(s.toString()); 
-        }
+        }*/
+        Chromosome bestofthebest=new Chromosome();
+        bestofthebest.setCF(0);
+        for(Chromosome c:bests)if(c!=null && c.getCF()>bestofthebest.getCF())bestofthebest=c;
+        
+        if(bestofthebest.getData()!=null)System.out.println(bestofthebest.toString()+ " : " + bestofthebest.getCF());
                 
         
         

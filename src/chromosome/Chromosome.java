@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Level;
 import utils.Search;
 import utils.Variant;
@@ -808,15 +810,24 @@ public class Chromosome extends Object implements Cloneable {
         cf=0;
         //расчет целевой функции
         //TODO: fix, incorrect calculation logic
+        Set<Integer> click = new HashSet<>();
         for(int i=0;i<data.length;i++){
             if(data[i]==(Object)1){
-                for(int j=i;j<data.length;j++)
-                    if(j==i || graph[i][j]==1)cf++;
-                    else {cf=0;break;}
+                click.add(i);
             }
         }
+        Set<Integer> click_cpy=new HashSet<>(click);
+        boolean incorrect = false;
+        for(int i:click){
+            if(!incorrect)
+                for(int j:click_cpy)
+                    if(!(i==j || graph[i][j]>0 )){;incorrect = true;break;}
+        }
         
+        if(!incorrect){for(Object o:data)cf+=(int)o;}
+        else cf=0;
     }catch(IOException ioex){System.err.println(ioex);};
+    
         return cf;
     }
 
