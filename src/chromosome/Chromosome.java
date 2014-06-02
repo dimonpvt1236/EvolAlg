@@ -7,11 +7,13 @@ package chromosome;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import utils.Search;
 import utils.Variant;
@@ -760,16 +762,15 @@ public class Chromosome extends Object implements Cloneable {
         //cf = 3*cf*cf*cf-2*cf+5;
         //cf = cf*cf*cf-30*cf*cf+255*cf+1;
         File f = new File("graph.txt");
-        if(!f.exists() && graph==null){
+        if(f.length() == 0 && graph==null){
             //generate file with new graph
-            f.createNewFile();
             StringBuilder str = new StringBuilder();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            String number = null;
+            String number;
             System.out.println("Введите размерность генерируемого графа");
             number = in.readLine();
             int n=Integer.valueOf(number);
-            str.append(number).append('\n');
+            graph = new int [n][n];
             for(int i=0;i<n;i++){
                 for(int j=0;j<n;j++)
                 {
@@ -778,12 +779,42 @@ public class Chromosome extends Object implements Cloneable {
             str.append('\n');
             }
             
-            //TODO: write str to file
+            FileWriter wrt = new FileWriter(f);
+            wrt.write("");
+            wrt.append(str);
+            wrt.flush();
         }
-        if(graph == null){
-        //TODO: read graph from file
+        if(graph == null && f.length()>0){
+            Scanner in = new Scanner(f);
+            StringBuilder filedata = new StringBuilder();
+            while (in.hasNext())
+                filedata.append(in.nextLine()).append("\n");
+            
+            String[] rows = filedata.toString().split(" \n");
+            graph = new int [rows.length][rows.length];
+            int i=0;
+            for(String s:rows){
+               String [] subrows = s.split(" ");
+               int j=0;
+               for(String sr:subrows){
+                   graph[i][j] = Integer.valueOf(sr);
+                   j++;
+               }
+               i++;
+            }
+            
         }
-        //TODO: calculate CF
+        
+        cf=0;
+        //расчет целевой функции
+        //TODO: fix, incorrect calculation logic
+        for(int i=0;i<data.length;i++){
+            if(data[i]==(Object)1){
+                for(int j=i;j<data.length;j++)
+                    if(j==i || graph[i][j]==1)cf++;
+                    else {cf=0;break;}
+            }
+        }
         
     }catch(IOException ioex){System.err.println(ioex);};
         return cf;
