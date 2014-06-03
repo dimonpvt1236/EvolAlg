@@ -246,4 +246,76 @@ public class GeneticAlgorithm {
         
         return Search.LinearSearch(p.getData(), p.getMaxCF());
     }
+    
+    /**
+     * <p>
+     * ГА транспортной задачи
+     * </p>
+     *
+     * @param n Колличество итераций
+     * @param p_k Вероятность выполнения оператора кроссинговера
+     * @param p_m Вероятность выполнения оператора мутации
+     * 
+     * @return Хромосома - лучшее решение
+     */
+    public static Chromosome SimpleGA_Transport(int n, int p_k, int p_m) {
+        Population p2;
+        Population p = new Population();
+        p.getShotgunPopulation_Vector(10, 6, 6);
+        System.out.println(p.toString());
+        System.out.println(p.getLength() + "\n-----------");
+        p.calculateAllCF();
+        System.out.println("MaxCF "+p.getMaxCF());
+        System.out.println("MinCF "+p.getMinCF());
+        System.out.println("MidCF "+p.getCF_mid()+ "\n-----------");
+        
+ 
+        for (int i=0; i<n; i++) {
+            p = p.SelectionWheelFortune(10);
+            //System.out.println(p.toString());
+            
+            // выполнение операторов кроссинговера
+            int c_k =0;
+            List<Chromosome> newpop = new ArrayList<>();
+            for (Chromosome c : p.getData()) {
+                int pk = (int)(Math.random() *100);
+                if (pk<= p_k) {
+                    Chromosome xrom = new Chromosome();
+                    Chromosome xrom2 = new Chromosome();
+                    xrom.setData(c.getData());
+                    int k = (int)(Math.random() * p.getLength());
+                    xrom2.setData(p.getData().get(k).getData());
+                    xrom.OK_PointOne(xrom2);
+                    
+                    newpop.add(xrom);
+                    newpop.add(xrom2);
+                    c_k++;
+                }              
+            }
+            // выполняем операторы мутации
+            int c_m = 0;
+            for (Chromosome c : newpop) {
+                int pm = (int)(Math.random() *100);
+                if (pm<= p_m) {
+                    c.MT_PointTwo();
+                    c_m++;
+                }              
+            }
+            // добавляем полученых потомков в исходную популяцию не исключая дубликаты
+            p2 = new Population(newpop); 
+            p2.calculateAllCF();
+            p.adjustPopulationD(p2);        
+            
+            p.calculateAllCF();
+            System.out.println("Kol OK "+c_k);
+            System.out.println("Kol MT "+c_m);
+            System.out.println("MaxCF "+p.getMaxCF());
+            System.out.println("MinCF "+p.getMinCF());
+            System.out.println("MidCF "+p.getCF_mid()+ "\n-----------");
+        }
+        
+        //System.out.println(p.toString());
+        
+        return Search.LinearSearch(p.getData(), p.getMaxCF());
+    }
 }

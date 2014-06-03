@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 /**
  *
@@ -93,7 +94,9 @@ public class Population implements Cloneable {
     
     public Population adjustPopulationD(Population p2) {
         for (Chromosome c : p2.data) {
-            this.data.add(c);
+            if (c.getCF()>0) {
+                this.data.add(c);
+            }
         }
         return this;
     }
@@ -196,6 +199,47 @@ public class Population implements Cloneable {
         data = newpop;
 
         length = newpop.size();
+        return this;
+    }
+    
+    public Population getShotgunPopulation_Vector(int count, int kolGen, int lenXrom) {
+
+        chromoLength = kolGen;
+        length = count;
+        data = new ArrayList<>();
+
+        for (int i = 0; i < length; i++) {
+            Chromosome[] xrm = new Chromosome[kolGen];
+            do {
+            for (int y=0; y<kolGen; y++) {
+                Object[] chr = new Object[lenXrom];
+
+                //setting 0 to all chromosome
+                for (int l = 0; l < lenXrom; l++) {
+                    chr[l] = 0;
+                }
+
+                long x = (long) (Math.random()* (Math.pow(2, lenXrom) +1) - 2);
+                if (x<0) x = 0;
+
+                for (int j = 0; j < lenXrom; j++) {
+                    int k = lenXrom - 1;
+                    while (x != 0) {
+                        chr[k] = ((int) x % 2);
+                        x = (long) x / 2;
+                        k--;
+                    }
+                    if (x==0) break;
+
+                }
+                xrm[y] = new Chromosome();
+                xrm[y].setData(chr);
+            }
+            } while (new Chromosome().setData(xrm).FunctionValue() == -1);
+            data.add(new Chromosome().setData(xrm));
+
+        }
+
         return this;
     }
 

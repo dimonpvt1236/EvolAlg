@@ -748,9 +748,48 @@ public class Chromosome extends Object implements Cloneable {
     }
 
     public double FunctionValue() {
-        cf = BinToDec();
-        //cf = 3*cf*cf*cf-2*cf+5;
-        cf = cf*cf*cf-30*cf*cf+255*cf+1;
+        int[] Price = {3, 5, 7, 4, 6, 10};
+        int[] Sklad = {40, 50};
+        int[] Customer = {20, 30, 40};
+        
+        if (data instanceof Chromosome[]) {
+            for(int i=0; i<6; i++) {
+                cf += ((Chromosome)data[i]).FunctionValue() * Price[i];
+            }
+            
+            float temp = 0;
+            int k = 0;
+            for (int i=0; i<Customer.length*Sklad.length; i++) {
+                temp += ((Chromosome)data[i]).getCF();
+                if (((int)(i+1)/(k+1)) == Customer.length) {
+                    if (Sklad[k] < temp) {
+                        cf = -1;
+                        return cf;
+                    }
+                    temp = 0;
+                    k++;
+                }
+                
+            }
+            
+            temp = 0;
+            for (int i=0; i<Customer.length; i++) {
+                for (int j=0; j< Sklad.length; j++) {
+                    temp += ((Chromosome)data[(int)(i+3*j)]).getCF(); 
+                }
+                
+                if (Customer[i] < temp) {
+                    cf = -1;
+                    return cf;
+                }
+                temp = 0;
+            }
+            
+        } else {
+            cf = BinToDec();
+            //cf = 3*cf*cf*cf-2*cf+5;
+            //cf = cf*cf*cf-30*cf*cf+255*cf+1;
+        }
         return cf;
     }
 

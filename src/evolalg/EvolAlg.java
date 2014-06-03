@@ -177,6 +177,7 @@ public class EvolAlg {
         */
         //</editor-fold>
         //<editor-fold desc="Отладка для 6й лабы">
+        /*
         Chromosome xrom1;
         
         Population p = new Population().genFullPopulation(6);
@@ -227,6 +228,13 @@ public class EvolAlg {
         }
                 
         
+        */
+        //</editor-fold>
+        
+        //<editor-fold desc="курсачь">
+            Chromosome xrom1;
+            xrom1 = GeneticAlgorithm.SimpleGA_Transport(50, 20, 70);
+            System.out.println(xrom1.toString());
         
         //</editor-fold>
     }
