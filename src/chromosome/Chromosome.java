@@ -809,6 +809,12 @@ public class Chromosome extends Object implements Cloneable {
         
         cf=0;
         //расчет целевой функции
+        int sum=0;
+       for(Object item:data) 
+       {
+           if((int)item>=1)sum++;
+       }
+       if(sum==1){cf=1.0;return cf;}
        
         Set<Integer> click = new HashSet<>();
         for(int i=0;i<data.length;i++){
@@ -816,6 +822,8 @@ public class Chromosome extends Object implements Cloneable {
                 click.add(i);
             }
         }
+
+        
         Set<Integer> click_cpy=new HashSet<>(click);
         boolean incorrect = false;
         for(int i:click){
@@ -827,7 +835,7 @@ public class Chromosome extends Object implements Cloneable {
         if(!incorrect){for(Object o:data)cf+=(int)o;}
         else cf=0;
         
-    }catch(IOException ioex){System.err.println(ioex);};
+    }catch(IOException ioex){System.err.println(ioex);}
     
         return cf;
     }

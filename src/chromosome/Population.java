@@ -43,6 +43,7 @@ public class Population implements Cloneable {
     private double CF_mid;
 
     public Population() {
+        data=new ArrayList<>();
     }
 
     public Population(List<Chromosome> d) {

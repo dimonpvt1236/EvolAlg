@@ -35,19 +35,22 @@ public class EvolAlg {
                 n = Integer.valueOf(in.nextLine());
             }
             
-            List<Chromosome> bests = new ArrayList<>();
+            Population bests = new Population();
             for (int i=0; i<10; i++) {
                     
                 // выполнение ГА
                 Chromosome best = GeneticAlgorithm.SimpleGA_Devica(1000, 10+i*8, 20, n);
                   
                 if(best!=null)
-                    bests.add(best);
+                    bests.addChromosome(best);
             }
           
             Chromosome bestofthebest=new Chromosome();
             bestofthebest.setCF(0);
-            for(Chromosome c:bests)if(c!=null && c.getCF()>bestofthebest.getCF())bestofthebest=c;
+            bests.calculateAllCF();
+            for(Chromosome c:bests.getData())
+                if(c!=null && c.getCF()>bestofthebest.getCF())
+                    bestofthebest=c;
             
             if(bestofthebest.getData()!=null)System.out.println(bestofthebest.toString()+ " : " + bestofthebest.getCF());
             else System.out.println("null");
