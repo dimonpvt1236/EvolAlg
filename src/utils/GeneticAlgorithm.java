@@ -183,7 +183,7 @@ public class GeneticAlgorithm {
         Population p2;
         Population p = new Population().genFullPopulation(pop_len);
         p.addShotgun(35);
-        System.out.println(p.getLength() + "\n-----------");
+        System.out.println("Before:\nLength: "+p.getLength());
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
         System.out.println("MinCF "+p.getMinCF());
@@ -233,12 +233,12 @@ public class GeneticAlgorithm {
             p = p.SelectionWheelFortune(40);
             
             p.calculateAllCF();
-            System.out.println("Lenght "+p.getLength());
+            System.out.println("After:\nLenght "+p.getLength());
             System.out.println("Kol OK "+c_k);
             System.out.println("Kol MT "+c_m);
             System.out.println("MaxCF "+p.getMaxCF());
             System.out.println("MinCF "+p.getMinCF());
-            System.out.println("MidCF "+p.getCF_mid()+ "\n-----------");
+            System.out.println("MidCF "+p.getCF_mid()+ "\n========");
             end = new Date().getTime();
         }
         

@@ -760,9 +760,6 @@ public class Chromosome extends Object implements Cloneable {
 
     public double FunctionValue() {
         try{
-        //cf = BinToDec();
-        //cf = 3*cf*cf*cf-2*cf+5;
-        //cf = cf*cf*cf-30*cf*cf+255*cf+1;
         File f = new File("graph.txt");
         if(f.length() == 0 && graph==null){
             //generate file with new graph
@@ -773,6 +770,7 @@ public class Chromosome extends Object implements Cloneable {
             number = in.readLine();
             int n=Integer.valueOf(number);
             graph = new int [n][n];
+            str.append(number);
             for(int i=0;i<n;i++){
                 for(int j=0;j<n;j++)
                 {
@@ -789,9 +787,10 @@ public class Chromosome extends Object implements Cloneable {
         if(graph == null && f.length()>0){
             Scanner in = new Scanner(f);
             StringBuilder filedata = new StringBuilder();
-            while (in.hasNext())
+            int n=Integer.valueOf(in.nextLine());
+            for(int i=n;i!=0;i--){
                 filedata.append(in.nextLine()).append("\n");
-            
+            }
             String[] rows = filedata.toString().split(" \n");
             graph = new int [rows.length][rows.length];
             int i=0;
@@ -799,12 +798,13 @@ public class Chromosome extends Object implements Cloneable {
                String [] subrows = s.split(" ");
                int j=0;
                for(String sr:subrows){
-                   graph[i][j] = Integer.valueOf(sr);
+                   int pret=Integer.valueOf(sr);
+                   graph[i][j] = (pret<0)?0:pret;
                    j++;
                }
                i++;
             }
-            
+            in.close();
         }
         
         cf=0;
@@ -812,7 +812,7 @@ public class Chromosome extends Object implements Cloneable {
        
         Set<Integer> click = new HashSet<>();
         for(int i=0;i<data.length;i++){
-            if(data[i]==(Object)1){
+            if((int)data[i] >= 1){
                 click.add(i);
             }
         }
@@ -826,6 +826,7 @@ public class Chromosome extends Object implements Cloneable {
         
         if(!incorrect){for(Object o:data)cf+=(int)o;}
         else cf=0;
+        
     }catch(IOException ioex){System.err.println(ioex);};
     
         return cf;
