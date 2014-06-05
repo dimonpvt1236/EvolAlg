@@ -16,6 +16,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.GeneticAlgorithm;
+
 /**
  *
  * @author Admin
@@ -36,28 +37,34 @@ public class EvolAlg {
             int iterations = Integer.valueOf(inK.readLine());
             Population bests = new Population();
             bests.setFile(filename);
-            for (int i=0; i<iterations; i++) {  
-                System.out.println("Iteration: "+(i+1)+"/"+iterations);
-                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(10, 10+i*8, 20, filename);
-                  
-                if(best!=null)
+            for (int i = 0; i < iterations; i++) {
+                System.out.println("Iteration: " + (i + 1) + "/" + iterations);
+                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(10, 10 + i * 8, 20, filename);
+
+                if (best != null) {
                     bests.addChromosome(best);
+                }
             }
-          
-            Chromosome bestofthebest=new Chromosome();
+
+            Chromosome bestofthebest = new Chromosome();
             bestofthebest.setCF(0);
             bests.calculateAllCF();
-            for(Chromosome c:bests.getData())
-                if(c.getCF()>bestofthebest.getCF())
-                    bestofthebest=c;
-            
-            if(bestofthebest.getData()!=null)System.out.println("Result:\n"+bestofthebest.toString()+ " : " + bestofthebest.getCF());
-            else System.out.println("Results not found");
-            
-            } catch (FileNotFoundException ex) {
+            for (Chromosome c : bests.getData()) {
+                if (c.getCF() > bestofthebest.getCF()) {
+                    bestofthebest = c;
+                }
+            }
+
+            if (bestofthebest.getData() != null) {
+                System.out.println("Result:\n" + bestofthebest.toString() + " : " + bestofthebest.getCF());
+            } else {
+                System.out.println("Results not found");
+            }
+
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(EvolAlg.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(EvolAlg.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 }

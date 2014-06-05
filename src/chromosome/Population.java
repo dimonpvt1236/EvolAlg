@@ -32,16 +32,16 @@ public class Population implements Cloneable {
     private double maxCF, minCF;
     private String file;
     private int[][] graph;
-    
+
     public String getFile() {
         return file;
     }
 
     public void setFile(String file) {
         this.file = file;
-            
+
         File f = new File(file);
-        if(f.length() == 0 && graph==null){
+        if (f.length() == 0 && graph == null) {
             try {
                 //generate file with new graph
                 f.createNewFile();
@@ -50,12 +50,11 @@ public class Population implements Cloneable {
                 String number;
                 System.out.println("Файл не найден. Он будет создан с новым графом. \nВведите размерность генерируемого графа");
                 number = in.readLine();
-                int n=Integer.valueOf(number);
-                graph = new int [n][n];
+                int n = Integer.valueOf(number);
+                graph = new int[n][n];
                 str.append(number).append("\n");
-                for(int i=0;i<n;i++){
-                    for(int j=0;j<n;j++)
-                    {
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < n; j++) {
                         str.append(Math.round(Math.random())).append(' ');
                     }
                     str.append('\n');
@@ -69,23 +68,23 @@ public class Population implements Cloneable {
                 Logger.getLogger(Population.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if(graph == null && f.length()>0){
+        if (graph == null && f.length() > 0) {
             try {
                 try (Scanner in = new Scanner(f)) {
                     StringBuilder filedata = new StringBuilder();
-                    int n=Integer.valueOf(in.nextLine());
-                    for(int i=n;i!=0;i--){
+                    int n = Integer.valueOf(in.nextLine());
+                    for (int i = n; i != 0; i--) {
                         filedata.append(in.nextLine()).append("\n");
                     }
                     String[] rows = filedata.toString().split(" \n");
-                    graph = new int [rows.length][rows.length];
-                    int i=0;
-                    for(String s:rows){
-                        String [] subrows = s.split(" ");
-                        int j=0;
-                        for(String sr:subrows){
-                            int pret=Integer.valueOf(sr);
-                            graph[i][j] = (pret<0)?0:pret;
+                    graph = new int[rows.length][rows.length];
+                    int i = 0;
+                    for (String s : rows) {
+                        String[] subrows = s.split(" ");
+                        int j = 0;
+                        for (String sr : subrows) {
+                            int pret = Integer.valueOf(sr);
+                            graph[i][j] = (pret < 0) ? 0 : pret;
                             j++;
                         }
                         i++;
@@ -97,7 +96,7 @@ public class Population implements Cloneable {
         }
         this.chromoLength = graph.length;
     }
-    
+
     public double getSumCF() {
         return sumCF;
     }
@@ -116,7 +115,7 @@ public class Population implements Cloneable {
     private double CF_mid;
 
     public Population() {
-        data=new ArrayList<>();
+        data = new ArrayList<>();
     }
 
     public Population(List<Chromosome> d) {
@@ -155,11 +154,13 @@ public class Population implements Cloneable {
     public List<Chromosome> getData() {
         return data;
     }
-/**
- * Расширяет популяцию за счет другой популяции, дубликаты включены не будут
- * @param p2 Другая популяция
- * @return Первая, расширенная популяция
- */
+
+    /**
+     * Расширяет популяцию за счет другой популяции, дубликаты включены не будут
+     *
+     * @param p2 Другая популяция
+     * @return Первая, расширенная популяция
+     */
     public Population adjustPopulation(Population p2) {
         for (Chromosome c : p2.data) {
             if (!this.data.contains(c)) {
@@ -168,9 +169,10 @@ public class Population implements Cloneable {
         }
         return this;
     }
-    
+
     /**
      * Расширяет популяцию за счет другой популяции, дубликаты будут добавлены
+     *
      * @param p2 Другая популяция
      * @return Расширенная популяция
      */
@@ -180,12 +182,12 @@ public class Population implements Cloneable {
         }
         return this;
     }
-    
+
     @Override
-     public Population clone() throws CloneNotSupportedException{
-         Population obj = (Population)super.clone();
-         return obj;
-     }
+    public Population clone() throws CloneNotSupportedException {
+        Population obj = (Population) super.clone();
+        return obj;
+    }
 
     @Override
     public String toString() {
@@ -205,7 +207,7 @@ public class Population implements Cloneable {
         str += "Total: " + data.size() + " chromosome(s)\n";
         return str;
     }
-    
+
     @Override
     public boolean equals(Object p) {
         return p.hashCode() == this.hashCode() && p.getClass() == Population.class;
@@ -268,13 +270,13 @@ public class Population implements Cloneable {
         return this;
     }
 
-    public Population genShotgun(int chrLen,float percentage){
+    public Population genShotgun(int chrLen, float percentage) {
         chromoLength = chrLen;
         int initlength = (int) Math.pow(2, chromoLength);
         data = new ArrayList<>();
 
         for (int i = 0; i < initlength; i++) {
-            if(Math.random()*100<percentage){
+            if (Math.random() * 100 < percentage) {
                 Object[] chr = new Object[chromoLength];
 
                 //setting 0 to all chromosome
@@ -298,7 +300,7 @@ public class Population implements Cloneable {
         length = data.size();
         return this;
     }
-    
+
     public Population addShotgun(float percentage) {
 
         List<Chromosome> newpop = new ArrayList<>();
@@ -362,7 +364,7 @@ public class Population implements Cloneable {
             calculateAllCF();
 
         }
-        
+
         double[] P = new double[data.size()];
         double[] N = new double[data.size()];
         int[] Nreal = new int[data.size()];
@@ -373,10 +375,10 @@ public class Population implements Cloneable {
             Nreal[i] = (int) Math.round(N[i]);
             NrealSum += Nreal[i];
         }
-        if (count!=0) {
+        if (count != 0) {
             NrealSum = count;
         }
-        
+
         List<Chromosome> newData = new ArrayList<>();
         for (int i = 0; i < NrealSum; i++) {
             double rand = Math.random();

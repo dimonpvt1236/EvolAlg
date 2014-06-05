@@ -25,7 +25,7 @@ public class Chromosome extends Object implements Cloneable {
     private double cf;
 
     private Object[] data;
-    
+
     public Chromosome() {
     }
 
@@ -69,13 +69,13 @@ public class Chromosome extends Object implements Cloneable {
     public Object[] getData() {
         return data;
     }
-    
+
     @Override
-     public Chromosome clone() throws CloneNotSupportedException{
-         Chromosome obj = (Chromosome)super.clone();
-         return obj;
-     }
-    
+    public Chromosome clone() throws CloneNotSupportedException {
+        Chromosome obj = (Chromosome) super.clone();
+        return obj;
+    }
+
     @Override
     public String toString() {
         String str = "";
@@ -160,54 +160,58 @@ public class Chromosome extends Object implements Cloneable {
         return point;
     }
 
-    public double FunctionValue(int [][] graph) {
-    
-        cf=0;
+    public double FunctionValue(int[][] graph) {
+
+        cf = 0;
         //расчет целевой функции
-        int sum=0;
-       for(Object item:data) 
-       {
-           if((int)item>=1)sum++;
-       }
-       if(sum==0){cf=0.0;return cf;}
-       if(sum==1){cf=1.0;return cf;}
-       
+        int sum = 0;
+        for (Object item : data) {
+            if ((int) item >= 1) {
+                sum++;
+            }
+        }
+        if (sum == 0) {
+            cf = 0.0;
+            return cf;
+        }
+        if (sum == 1) {
+            cf = 1.0;
+            return cf;
+        }
+
         Set<Integer> click = new HashSet<>();
-        for(int i=0;i<data.length;i++){
-            if((int)data[i] >= 1){
+        for (int i = 0; i < data.length; i++) {
+            if ((int) data[i] >= 1) {
                 click.add(i);
             }
         }
-        
-        Set<Integer> click_cpy=new HashSet<>(click);
+
+        Set<Integer> click_cpy = new HashSet<>(click);
         boolean incorrect = false;
-        for(int i:click){
-            if(!incorrect)
-                for(int j:click_cpy){
-                   //try{
-                       if(!(i==j || graph[i][j]>0 )){incorrect = true;
-                   break;}
+        for (int i : click) {
+            if (!incorrect) {
+                for (int j : click_cpy) {
+                    //try{
+                    if (!(i == j || graph[i][j] > 0)) {
+                        incorrect = true;
+                        break;
+                    }
                    //}catch(NullPointerException e){System.err.println(i+" "+j+" "+incorrect+" "+cf+" "+Arrays.toString(graph));}
-                    
+
                 }
+            }
         }
-        
-        if(!incorrect){for(Object o:data)cf+=(int)o;}
-        else cf=0;
-        
+
+        if (!incorrect) {
+            for (Object o : data) {
+                cf += (int) o;
+            }
+        } else {
+            cf = 0;
+        }
+
         return cf;
     }
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * <p>
