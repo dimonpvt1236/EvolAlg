@@ -233,8 +233,9 @@ public class EvolAlg {
         
         //<editor-fold desc="курсачь">
             Chromosome xrom1;
-            xrom1 = GeneticAlgorithm.SimpleGA_Transport(50, 20, 70);
-            System.out.println(xrom1.toString());
+            xrom1 = GeneticAlgorithm.SimpleGA_Transport(10, 50, 20, 15);
+            System.out.println(xrom1.toStringDec());
+            System.out.println(xrom1.getProd());
         
         //</editor-fold>
     }

@@ -30,4 +30,32 @@ public class Search {
         }
         return null;
     }
+    
+    public static Chromosome LinearSearchProd(List<Chromosome> data, double key) {
+        for (Chromosome a : data) {
+            if (Math.abs(a.getProd()-key) <= 0.01/* && a.isPr()*/) {
+                return a;
+            }
+        }
+        return null;
+    }
+    
+    public static Chromosome LinearSearchProdI(List<Chromosome> data, double key) {
+        for (Chromosome a : data) {
+            if (Math.abs(a.getProd()-key) >= 0.01/* && a.isPr()*/) {
+                return a;
+            }
+        }
+        return null;
+    }
+    
+    public static Chromosome LinearSearchIsProd(List<Chromosome> data) {
+        for (Chromosome a : data) {
+            if (!a.isPr()) {
+                return a;
+            }
+        }
+        return null;
+    }
+    
 }

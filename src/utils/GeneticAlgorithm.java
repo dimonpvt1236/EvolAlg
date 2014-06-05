@@ -10,6 +10,8 @@ import chromosome.Population;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Starik
@@ -255,14 +257,24 @@ public class GeneticAlgorithm {
      * @param n Колличество итераций
      * @param p_k Вероятность выполнения оператора кроссинговера
      * @param p_m Вероятность выполнения оператора мутации
+     * @param countPop Размер стартовой популяции
      * 
      * @return Хромосома - лучшее решение
      */
-    public static Chromosome SimpleGA_Transport(int n, int p_k, int p_m) {
-        Population p2;
+    public static Chromosome SimpleGA_Transport(int n, int p_k, int p_m, int countPop) { 
+        int[] Price = {8, 11, 7, 5, 2, 3, 5, 7, 10, 4, 6, 10};
+        int[] Sklad = {10, 40, 50};
+        int[] Customer = {10, 20, 30, 40};
+ 
+        Population p2, p_result = null;
         Population p = new Population();
-        p.getShotgunPopulation_Vector(10, 6, 6);
-        System.out.println(p.toString());
+        // ввод исзодных данных
+        p.setCustomer(Customer);
+        p.setPrice(Price);
+        p.setSklad(Sklad);
+        // формирование начальной популяции
+        p.getShotgunPopulation_Vector(countPop, 12, 6);
+        //System.out.println(p.toString());
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
@@ -271,51 +283,74 @@ public class GeneticAlgorithm {
         
  
         for (int i=0; i<n; i++) {
-            p = p.SelectionWheelFortune(10);
-            //System.out.println(p.toString());
-            
-            // выполнение операторов кроссинговера
-            int c_k =0;
-            List<Chromosome> newpop = new ArrayList<>();
-            for (Chromosome c : p.getData()) {
-                int pk = (int)(Math.random() *100);
-                if (pk<= p_k) {
-                    Chromosome xrom = new Chromosome();
-                    Chromosome xrom2 = new Chromosome();
-                    xrom.setData(c.getData());
-                    int k = (int)(Math.random() * p.getLength());
-                    xrom2.setData(p.getData().get(k).getData());
-                    xrom.OK_PointOne(xrom2);
-                    
-                    newpop.add(xrom);
-                    newpop.add(xrom2);
-                    c_k++;
+            try {
+                // выполнение операторов кроссинговера
+                int c_k =0;
+                List<Chromosome> newpop = new ArrayList<>();
+                for (Chromosome c : p.getData()) {
+                    int pk = (int)(Math.random() *100);
+                    if (pk<= p_k) {
+                        try {
+                            Chromosome xrom;// = new Chromosome();
+                            Chromosome xrom2;// = new Chromosome();
+                            
+                           // Cloner cloner=new Cloner();
+                            xrom = c.clone();//.setData(c.getData());
+                            int k = (int)(Math.random() * p.getLength());
+                            xrom2 = p.getData().get(k).clone();//.setData(p.getData().get(k).getData());
+                            
+                            xrom.OK_PointOne(xrom2);
+                            
+                            newpop.add(xrom);
+                            newpop.add(xrom2);
+                            c_k++;
+                        } catch (CloneNotSupportedException ex) {
+                            Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }              
-            }
-            // выполняем операторы мутации
-            int c_m = 0;
-            for (Chromosome c : newpop) {
-                int pm = (int)(Math.random() *100);
-                if (pm<= p_m) {
-                    c.MT_PointTwo();
-                    c_m++;
-                }              
-            }
-            // добавляем полученых потомков в исходную популяцию не исключая дубликаты
-            p2 = new Population(newpop); 
-            p2.calculateAllCF();
-            p.adjustPopulationD(p2);        
-            
-            p.calculateAllCF();
-            System.out.println("Kol OK "+c_k);
-            System.out.println("Kol MT "+c_m);
-            System.out.println("MaxCF "+p.getMaxCF());
-            System.out.println("MinCF "+p.getMinCF());
-            System.out.println("MidCF "+p.getCF_mid()+ "\n-----------");
+                // выполняем операторы мутации
+                int c_m = 0;
+                for (Chromosome c : newpop) {
+                    int pm = (int)(Math.random() *100);
+                    if (pm<= p_m) {
+                        c.MT_PointTwo();
+                        c_m++;
+                    }
+                }
+                // добавляем полученых потомков в исходную популяцию не исключая дубликаты
+                p2 = new Population(newpop);
+                p.adjustPopulationD(p2);
+                
+                p.calculateAllCF();
+                // удаление не подходящих решений
+                p = p.removeChromosome(100);
+                if (p.getData().size()==0) {
+                    break;
+                }
+                p = p.SelectionWheelFortuneVector(countPop, false);
+                p.calculateAllCF();
+                
+                System.out.println("Kol OK "+c_k);
+                System.out.println("Kol MT "+c_m);
+                System.out.println("MaxCF "+p.getMaxCF());
+                System.out.println("MinCF "+p.getMinCF());
+                System.out.println("MidCF "+p.getCF_mid()+ "\n-----------");
+                if (p.getMaxCF()-p.getMinCF() <= 0.0001) {
+                    //return Search.LinearSearch(p.getData(), p.getMinCF());
+                    break;
+                }
+                
+                p_result = p.clone();
+                
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                } 
         }
-        
-        //System.out.println(p.toString());
-        
-        return Search.LinearSearch(p.getData(), p.getMaxCF());
+        if (p.getData().size()>0) {
+            return Search.LinearSearch(p.getData(), p.getMinCF());
+        } else {
+            return Search.LinearSearch(p_result.getData(), p.getMinCF());
+        }
     }
 }

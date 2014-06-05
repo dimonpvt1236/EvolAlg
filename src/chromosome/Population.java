@@ -6,6 +6,7 @@
 package chromosome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
+import utils.Search;
 
 /**
  *
@@ -23,9 +25,46 @@ public class Population implements Cloneable {
     private List<Chromosome> data;
     private int length;
     private int chromoLength;
-    private double sumCF;
+    private double sumCF, sumPR;
     private double maxCF, minCF;
+    private double CF_mid;
+    private double maxPR, sumICF, sumIPR;
+    private int[] Price;
+    private int[] Sklad;
+    private int[] Customer;
 
+    public int[] getPrice() {
+        return Price;
+    }
+
+    public void setPrice(int[] Price) {
+        this.Price = Price;
+    }
+
+    public int[] getSklad() {
+        return Sklad;
+    }
+
+    public void setSklad(int[] Sklad) {
+        this.Sklad = Sklad;
+    }
+
+    public int[] getCustomer() {
+        return Customer;
+    }
+
+    public void setCustomer(int[] Customer) {
+        this.Customer = Customer;
+    }
+
+    public double getSumPR() {
+        return sumPR;
+    }
+
+    public void setSumPR(double SumPR) {
+        this.sumPR = SumPR;
+    }
+    
     public double getSumCF() {
         return sumCF;
     }
@@ -41,8 +80,7 @@ public class Population implements Cloneable {
     public double getCF_mid() {
         return CF_mid;
     }
-    private double CF_mid;
-
+    
     public Population() {
     }
 
@@ -94,9 +132,7 @@ public class Population implements Cloneable {
     
     public Population adjustPopulationD(Population p2) {
         for (Chromosome c : p2.data) {
-            if (c.getCF()>0) {
-                this.data.add(c);
-            }
+            this.data.add(c);
         }
         return this;
     }
@@ -104,6 +140,11 @@ public class Population implements Cloneable {
     @Override
      public Population clone() throws CloneNotSupportedException{
          Population obj = (Population)super.clone();
+         /*
+         List<Chromosome> data_new = new ArrayList<>();
+         Object[] dt = data.toArray();
+         obj.data = Arrays.toList(dt);*/
+         
          return obj;
      }
 
@@ -112,6 +153,15 @@ public class Population implements Cloneable {
         String str = "";
         for (Chromosome c : data) {
             str += c.toString() + "\n";
+        }
+        str += "Total: " + data.size() + " chromosome(s)\n";
+        return str;
+    }
+    
+    public String toStringDec() {
+        String str = "";
+        for (Chromosome c : data) {
+            str += c.toStringDec() + "\n";
         }
         str += "Total: " + data.size() + " chromosome(s)\n";
         return str;
@@ -156,7 +206,17 @@ public class Population implements Cloneable {
         }
         return this;
     }
-
+    
+    public Population removeChromosome(int prod) {
+        while (Search.LinearSearchProdI(data, prod)!=null) {
+            data.remove(Search.LinearSearchProdI(data, prod));           
+        }
+        while (Search.LinearSearchIsProd(data)!=null) {
+            data.remove(Search.LinearSearchIsProd(data));           
+        }
+        return this;
+    }
+    
     public Population genFullPopulation(int chrLen) {
 
         chromoLength = chrLen;
@@ -207,36 +267,88 @@ public class Population implements Cloneable {
         chromoLength = kolGen;
         length = count;
         data = new ArrayList<>();
-
+        
+        int poisk = 0;
         for (int i = 0; i < length; i++) {
             Chromosome[] xrm = new Chromosome[kolGen];
+            Chromosome chr_temp;
             do {
-            for (int y=0; y<kolGen; y++) {
-                Object[] chr = new Object[lenXrom];
-
-                //setting 0 to all chromosome
-                for (int l = 0; l < lenXrom; l++) {
-                    chr[l] = 0;
-                }
-
-                long x = (long) (Math.random()* (Math.pow(2, lenXrom) +1) - 2);
-                if (x<0) x = 0;
-
-                for (int j = 0; j < lenXrom; j++) {
-                    int k = lenXrom - 1;
-                    while (x != 0) {
-                        chr[k] = ((int) x % 2);
-                        x = (long) x / 2;
-                        k--;
+                for (int y=0; y<kolGen; y++) {
+                    int sk = y/Customer.length;
+                    int cust = y%Customer.length;
+                    poisk = 0;
+                    if (sk<Sklad.length-1 && cust<Customer.length-1) {
+                        int cf1 = 0;
+                        for(int j=0; j<cust; j++ ){
+                            cf1 += xrm[j+Customer.length*sk].BinToDec();
+                        } 
+                        cf1 = Sklad[sk] - cf1;
+                        
+                        int cf2 =0;
+                        for(int j=0; j<sk; j++ ){
+                            cf2 += xrm[cust+Customer.length*j].BinToDec();
+                        } 
+                        cf2 = Customer[cust] - cf2;
+                        
+                        if (cf1<cf2) {
+                            poisk = cf1;
+                        } else {
+                            poisk = cf2;
+                        }
+                        poisk = (int)(Math.random()*poisk);
                     }
-                    if (x==0) break;
+                    
+                    if (cust==Customer.length-1) {
+                        int cf1 = 0;
+                        for(int j=0; j<cust; j++ ){
+                            cf1 += xrm[j+Customer.length*sk].BinToDec();
+                        } 
+                        cf1 = Sklad[sk] - cf1;
+                        
+                        poisk = cf1;
+                    }
+                    
+                    if (sk==Sklad.length-1) {
+                        int cf2 =0;
+                        for(int j=0; j<sk; j++ ){
+                            cf2 += xrm[cust+Customer.length*j].BinToDec();
+                        } 
+                        cf2 = Customer[cust] - cf2;
+                        
+                        poisk = cf2;
+                    }
+                    Object[] chr = new Object[lenXrom];
 
+                    //setting 0 to all chromosome
+                    for (int l = 0; l < lenXrom; l++) {
+                        chr[l] = 0;
+                    }
+
+                    long x = poisk; //(long) (Math.random()* Math.pow(2, lenXrom));
+                    if (x<0) x = 0;
+
+                    for (int j = 0; j < lenXrom; j++) {
+                        int k = lenXrom - 1;
+                        while (x != 0) {
+                            chr[k] = ((int) x % 2);
+                            x = (long) x / 2;
+                            k--;
+                        }
+                        if (x==0) break;
+
+                    }
+                    xrm[y] = new Chromosome();
+                    xrm[y].setData(chr);
                 }
-                xrm[y] = new Chromosome();
-                xrm[y].setData(chr);
-            }
-            } while (new Chromosome().setData(xrm).FunctionValue() == -1);
-            data.add(new Chromosome().setData(xrm));
+                chr_temp = new Chromosome().setData(xrm);
+                
+                chr_temp.setPrice(Price);
+                chr_temp.setSklad(Sklad);
+                chr_temp.setCustomer(Customer);
+                
+                chr_temp.FunctionValue();
+            } while (chr_temp.isPr()==false);
+            data.add(new Chromosome().setData(xrm).setPrice(Price).setSklad(Sklad).setCustomer(Customer));
 
         }
 
@@ -272,17 +384,30 @@ public class Population implements Cloneable {
      *
      */
     public void calculateAllCF() {
+        sumPR = 0;
         sumCF = 0;
         maxCF = 0;
+        sumIPR = 0;
+        sumICF = 0;
+        maxPR = 0;
         minCF = Double.MAX_VALUE;
         for (Chromosome c : data) {
             sumCF += c.FunctionValue();
+            sumPR +=  c.getProd();
             if (maxCF < c.getCF()) {
                 maxCF = c.getCF();
+            }
+            if (maxPR < c.getProd()) {
+                maxPR = c.getProd();
             }
             if (minCF > c.getCF()) {
                 minCF = c.getCF();
             }
+        }
+        for (Chromosome c : data) {
+            sumIPR += maxPR - c.getProd();
+            sumICF += maxCF - c.getCF();
+            
         }
         CF_mid = sumCF / data.size();
     }
@@ -320,6 +445,58 @@ public class Population implements Cloneable {
 
                 if (rand < prev) {
                     newData.add(data.get(j));
+                    break;
+                }
+
+            }
+        }
+
+        return new Population(newData);
+    }
+    
+    public Population SelectionWheelFortuneVector(int count, boolean type) {
+        if (sumCF == 0) {
+            calculateAllCF();
+
+        }
+        
+        double[] P = new double[data.size()];
+        double[] N = new double[data.size()];
+        int[] Nreal = new int[data.size()];
+        int NrealSum = 0;
+        for (int i = 0; i < data.size(); i++) {
+            if (type) {
+                P[i] = data.get(i).FunctionValue() / sumCF;
+            } else {
+                //P[i] = (maxSCF - Math.abs(SCF - data.get(i).FunctionValue())) / sumSCF  + data.get(i).getProd() / sumPR;
+                //P[i] = (maxCF - data.get(i).FunctionValue()) / sumICF  + (maxPR - data.get(i).getProd()) / sumIPR;
+                P[i] = (maxCF - data.get(i).FunctionValue()+1) / sumCF  /*+ Math.abs(maxPR - Math.abs(90 - data.get(i).getProd())) / sumPR*/;
+            }
+            
+            N[i] = data.get(i).FunctionValue() / CF_mid;
+            Nreal[i] = (int) Math.round(N[i]);
+            NrealSum += Nreal[i];
+        }
+        if (count!=0) {
+            NrealSum = count;
+        }
+        
+        List<Chromosome> newData = new ArrayList<>();
+        //for (int i = 0; i < NrealSum; i++) {
+        int i = 0;
+        while (i<NrealSum) {
+            double rand = Math.random()/*2*/;
+            for (int j = 0; j < data.size(); j++) {
+                double prev = 0.;
+                int c = j;
+                while (c >= 0) {
+                    prev += P[c--];
+
+                }
+
+                if (rand < prev) {
+                    newData.add(data.get(j));
+                    i++;
                     break;
                 }
 

@@ -18,9 +18,56 @@ import utils.Variant;
 public class Chromosome extends Object implements Cloneable {
 
     private int length;
+    private boolean pr;
     private double cf;
-
+    private double prod;
     private Object[] data;
+    private int[] Price;
+    private int[] Sklad;
+    private int[] Customer;
+
+    public int[] getPrice() {
+        return Price;
+    }
+
+    public Chromosome setPrice(int[] Price) {
+        this.Price = Price;
+        return this;
+    }
+
+    public int[] getSklad() {
+        return Sklad;
+    }
+
+    public Chromosome setSklad(int[] Sklad) {
+        this.Sklad = Sklad;
+        return this;
+    }
+
+    public int[] getCustomer() {
+        return Customer;
+    }
+
+    public Chromosome setCustomer(int[] Customer) {
+        this.Customer = Customer;
+        return this;
+    }
+
+    public boolean isPr() {
+        return pr;
+    }
+
+    public void setPr(boolean pr) {
+        this.pr = pr;
+    }
+
+    public double getProd() {
+        return prod;
+    }
+
+    public void setProd(double prod) {
+        this.prod = prod;
+    }
 
     public Chromosome() {
     }
@@ -68,8 +115,19 @@ public class Chromosome extends Object implements Cloneable {
     
     @Override
      public Chromosome clone() throws CloneNotSupportedException{
-         Chromosome obj = (Chromosome)super.clone();
-         return obj;
+        Chromosome obj = (Chromosome)super.clone();
+         
+        if (obj.data instanceof Chromosome[]) {
+            obj.data = (Chromosome[]) data.clone();
+        } else {
+            obj.data = (Object[]) data.clone();
+        }
+        
+        obj.Customer = (int[]) Customer;
+        obj.Sklad = (int[]) Sklad;
+        obj.Price = (int[]) Price;
+         
+        return obj;
      }
     
     @Override
@@ -80,6 +138,21 @@ public class Chromosome extends Object implements Cloneable {
         }
         return str;
     }
+    
+    public String toStringDec() {
+        String str = "";
+        if (data instanceof Chromosome[]) {
+            for (Object data1 : data) {
+                str += ((Chromosome)data1).BinToDec() + " ";
+            }
+        } else {
+            for (Object data1 : data) {
+                str += data1 + " ";
+            }
+        }
+        return str;
+    }
+
 
     public String toString(int crossPoint) {
         String str = "";
@@ -748,13 +821,14 @@ public class Chromosome extends Object implements Cloneable {
     }
 
     public double FunctionValue() {
-        int[] Price = {3, 5, 7, 4, 6, 10};
-        int[] Sklad = {40, 50};
-        int[] Customer = {20, 30, 40};
+        prod = 0;
+        pr = true;
+        cf = 0;
         
         if (data instanceof Chromosome[]) {
-            for(int i=0; i<6; i++) {
+            for(int i=0; i<Customer.length*Sklad.length; i++) {
                 cf += ((Chromosome)data[i]).FunctionValue() * Price[i];
+                prod += ((Chromosome)data[i]).FunctionValue();
             }
             
             float temp = 0;
@@ -762,8 +836,8 @@ public class Chromosome extends Object implements Cloneable {
             for (int i=0; i<Customer.length*Sklad.length; i++) {
                 temp += ((Chromosome)data[i]).getCF();
                 if (((int)(i+1)/(k+1)) == Customer.length) {
-                    if (Sklad[k] < temp) {
-                        cf = -1;
+                    if (temp > Sklad[k]) {
+                        pr = false;
                         return cf;
                     }
                     temp = 0;
@@ -778,17 +852,15 @@ public class Chromosome extends Object implements Cloneable {
                     temp += ((Chromosome)data[(int)(i+3*j)]).getCF(); 
                 }
                 
-                if (Customer[i] < temp) {
-                    cf = -1;
+                if (temp > Customer[i]) {
+                    pr = false;
                     return cf;
                 }
                 temp = 0;
             }
-            
+
         } else {
             cf = BinToDec();
-            //cf = 3*cf*cf*cf-2*cf+5;
-            //cf = cf*cf*cf-30*cf*cf+255*cf+1;
         }
         return cf;
     }
