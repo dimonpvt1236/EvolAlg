@@ -153,7 +153,6 @@ public class Chromosome extends Object implements Cloneable {
         return str;
     }
 
-
     public String toString(int crossPoint) {
         String str = "";
 
@@ -849,7 +848,7 @@ public class Chromosome extends Object implements Cloneable {
             temp = 0;
             for (int i=0; i<Customer.length; i++) {
                 for (int j=0; j< Sklad.length; j++) {
-                    temp += ((Chromosome)data[(int)(i+3*j)]).getCF(); 
+                    temp += ((Chromosome)data[(int)(i+Customer.length*j)]).getCF(); 
                 }
                 
                 if (temp > Customer[i]) {
