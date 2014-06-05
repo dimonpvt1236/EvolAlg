@@ -24,15 +24,16 @@ public class GeneticAlgorithm {
      * @param t Время работы алгоритма
      * @param p_k Вероятность выполнения оператора кроссинговера
      * @param p_m Вероятность выполнения оператора мутации
-     * @param pop_len Длина хромосом в популяции
      * @param filename Имя файла с графом
      * @return Хромосома - лучшее решение
      */
-    public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m,int pop_len,String filename) {
+    public static Chromosome SimpleGA_Devica(long t, int p_k, int p_m,String filename) {
         Population p2;
-        Population p = new Population().genFullPopulation(pop_len);
+        Population p = new Population();
         p.setFile(filename);
-        p.addShotgun(35);
+        System.out.println("File reading ends");
+        p.genShotgun(p.getChromoLength(),40);
+        System.out.println("Population generations ends");
         System.out.println("Before:\nLength: "+p.getLength());
         p.calculateAllCF();
         System.out.println("MaxCF "+p.getMaxCF());
@@ -42,7 +43,7 @@ public class GeneticAlgorithm {
         long start = new Date().getTime();
         long end = start;
         
-        while ((end-start) <= t) {            
+        do {            
            
             int c_k =0;
             List<Chromosome> newpop = new ArrayList<>();
@@ -84,7 +85,7 @@ public class GeneticAlgorithm {
             System.out.println("MinCF "+p.getMinCF());
             System.out.println("MidCF "+p.getCF_mid()+ "\n========");
             end = new Date().getTime();
-        }
+        }while ((end-start) <= t);
         
         return Search.LinearSearch(p.getData(), p.getMaxCF());
     }

@@ -44,6 +44,7 @@ public class Population implements Cloneable {
         if(f.length() == 0 && graph==null){
             try {
                 //generate file with new graph
+                f.createNewFile();
                 StringBuilder str = new StringBuilder();
                 BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
                 String number;
@@ -51,7 +52,7 @@ public class Population implements Cloneable {
                 number = in.readLine();
                 int n=Integer.valueOf(number);
                 graph = new int [n][n];
-                str.append(number);
+                str.append(number).append("\n");
                 for(int i=0;i<n;i++){
                     for(int j=0;j<n;j++)
                     {
@@ -94,6 +95,7 @@ public class Population implements Cloneable {
                 Logger.getLogger(Population.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        this.chromoLength = graph.length;
     }
     
     public double getSumCF() {
@@ -266,6 +268,37 @@ public class Population implements Cloneable {
         return this;
     }
 
+    public Population genShotgun(int chrLen,float percentage){
+        chromoLength = chrLen;
+        int initlength = (int) Math.pow(2, chromoLength);
+        data = new ArrayList<>();
+
+        for (int i = 0; i < initlength; i++) {
+            if(Math.random()*100<percentage){
+                Object[] chr = new Object[chromoLength];
+
+                //setting 0 to all chromosome
+                for (int l = 0; l < chromoLength; l++) {
+                    chr[l] = 0;
+                }
+
+                for (int j = 0; j < chromoLength; j++) {
+                    int x = i;
+                    int k = chromoLength - 1;
+                    while (x != 0) {
+                        chr[k] = x % 2;
+                        x = (int) x / 2;
+                        k--;
+                    }
+
+                }
+                data.add(new Chromosome(chromoLength).setData(chr));
+            }
+        }
+        length = data.size();
+        return this;
+    }
+    
     public Population addShotgun(float percentage) {
 
         List<Chromosome> newpop = new ArrayList<>();

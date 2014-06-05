@@ -32,16 +32,13 @@ public class EvolAlg {
             System.out.println("Введите имя файла с графом ");
             System.out.println("Например: \"..\\graphbuilder\\graphs\\sample2.graph\"");
             String filename = inK.readLine();
-            File f = new File(filename);
-            
-            int n=0;
-            try (Scanner in = new Scanner(f)) {
-                n = Integer.valueOf(in.nextLine());
-            }
+            System.out.println("Введите количество итераций алгоритма");
+            int iterations = Integer.valueOf(inK.readLine());
             Population bests = new Population();
             bests.setFile(filename);
-            for (int i=0; i<100; i++) {  
-                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(10, 10+i*8, 20, n, filename);
+            for (int i=0; i<iterations; i++) {  
+                System.out.println("Iteration: "+(i+1)+"/"+iterations);
+                Chromosome best = GeneticAlgorithm.SimpleGA_Devica(10, 10+i*8, 20, filename);
                   
                 if(best!=null)
                     bests.addChromosome(best);
