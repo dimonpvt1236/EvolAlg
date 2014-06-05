@@ -265,6 +265,16 @@ public class GeneticAlgorithm {
         int[] Price = {8, 11, 7, 5, 2, 3, 5, 7, 10, 4, 6, 10};
         int[] Sklad = {10, 40, 50};
         int[] Customer = {10, 20, 30, 40};
+        /*
+        int[] Price = {3, 5, 7, 4, 6, 10};
+        int[] Sklad = {40, 50};
+        int[] Customer = {20, 30, 40};*/
+        
+        int kolXrom = Sklad.length * Customer.length;
+        int prod_temp = 0;
+        for (int i=0; i<Sklad.length; i++) {
+            prod_temp += Sklad[i];
+        }
  
         Population p2, p_result = null;
         Population p = new Population();
@@ -273,7 +283,7 @@ public class GeneticAlgorithm {
         p.setPrice(Price);
         p.setSklad(Sklad);
         // формирование начальной популяции
-        p.getShotgunPopulation_Vector(countPop, 12, 6);
+        p.getShotgunPopulation_Vector(countPop, kolXrom, 6);
         //System.out.println(p.toString());
         System.out.println(p.getLength() + "\n-----------");
         p.calculateAllCF();
@@ -324,7 +334,7 @@ public class GeneticAlgorithm {
                 
                 p.calculateAllCF();
                 // удаление не подходящих решений
-                p = p.removeChromosome(100);
+                p = p.removeChromosome(prod_temp);
                 if (p.getData().size()==0) {
                     break;
                 }
