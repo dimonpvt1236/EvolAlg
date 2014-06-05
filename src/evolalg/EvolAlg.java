@@ -236,6 +236,11 @@ public class EvolAlg {
             xrom1 = GeneticAlgorithm.SimpleGA_Transport(10, 50, 20, 15);
             System.out.println(xrom1.toStringDec());
             System.out.println(xrom1.getProd());
+            System.out.println(xrom1.FunctionValue());
+            if (xrom1.isPr()) {
+                System.out.println("good");
+            }
+            
         
         //</editor-fold>
     }

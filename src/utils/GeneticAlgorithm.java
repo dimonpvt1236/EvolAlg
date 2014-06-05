@@ -349,7 +349,7 @@ public class GeneticAlgorithm {
         }
         if (p.getData().size()>0) {
             return Search.LinearSearch(p.getData(), p.getMinCF());
-        } else {
+        } else { 
             return Search.LinearSearch(p_result.getData(), p.getMinCF());
         }
     }
