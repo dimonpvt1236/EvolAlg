@@ -5,13 +5,19 @@
  */
 package chromosome;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,7 +30,72 @@ public class Population implements Cloneable {
     private int chromoLength;
     private double sumCF;
     private double maxCF, minCF;
+    private String file;
+    private int[][] graph;
+    
+    public String getFile() {
+        return file;
+    }
 
+    public void setFile(String file) {
+        this.file = file;
+            
+        File f = new File(file);
+        if(f.length() == 0 && graph==null){
+            try {
+                //generate file with new graph
+                StringBuilder str = new StringBuilder();
+                BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+                String number;
+                System.out.println("Файл не найден. Он будет создан с новым графом. \nВведите размерность генерируемого графа");
+                number = in.readLine();
+                int n=Integer.valueOf(number);
+                graph = new int [n][n];
+                str.append(number);
+                for(int i=0;i<n;i++){
+                    for(int j=0;j<n;j++)
+                    {
+                        str.append(Math.round(Math.random())).append(' ');
+                    }
+                    str.append('\n');
+                }
+
+                FileWriter wrt = new FileWriter(f);
+                wrt.write("");
+                wrt.append(str);
+                wrt.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(Population.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(graph == null && f.length()>0){
+            try {
+                try (Scanner in = new Scanner(f)) {
+                    StringBuilder filedata = new StringBuilder();
+                    int n=Integer.valueOf(in.nextLine());
+                    for(int i=n;i!=0;i--){
+                        filedata.append(in.nextLine()).append("\n");
+                    }
+                    String[] rows = filedata.toString().split(" \n");
+                    graph = new int [rows.length][rows.length];
+                    int i=0;
+                    for(String s:rows){
+                        String [] subrows = s.split(" ");
+                        int j=0;
+                        for(String sr:subrows){
+                            int pret=Integer.valueOf(sr);
+                            graph[i][j] = (pret<0)?0:pret;
+                            j++;
+                        }
+                        i++;
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Population.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     public double getSumCF() {
         return sumCF;
     }
@@ -82,7 +153,11 @@ public class Population implements Cloneable {
     public List<Chromosome> getData() {
         return data;
     }
-
+/**
+ * Расширяет популяцию за счет другой популяции, дубликаты включены не будут
+ * @param p2 Другая популяция
+ * @return Первая, расширенная популяция
+ */
     public Population adjustPopulation(Population p2) {
         for (Chromosome c : p2.data) {
             if (!this.data.contains(c)) {
@@ -92,6 +167,11 @@ public class Population implements Cloneable {
         return this;
     }
     
+    /**
+     * Расширяет популяцию за счет другой популяции, дубликаты будут добавлены
+     * @param p2 Другая популяция
+     * @return Расширенная популяция
+     */
     public Population adjustPopulationD(Population p2) {
         for (Chromosome c : p2.data) {
             this.data.add(c);
@@ -233,7 +313,7 @@ public class Population implements Cloneable {
         maxCF = 0;
         minCF = Double.MAX_VALUE;
         for (Chromosome c : data) {
-            sumCF += c.FunctionValue();
+            sumCF += c.FunctionValue(graph);
             if (maxCF < c.getCF()) {
                 maxCF = c.getCF();
             }
@@ -255,8 +335,8 @@ public class Population implements Cloneable {
         int[] Nreal = new int[data.size()];
         int NrealSum = 0;
         for (int i = 0; i < data.size(); i++) {
-            P[i] = data.get(i).FunctionValue() / sumCF;
-            N[i] = data.get(i).FunctionValue() / CF_mid;
+            P[i] = data.get(i).FunctionValue(graph) / sumCF;
+            N[i] = data.get(i).FunctionValue(graph) / CF_mid;
             Nreal[i] = (int) Math.round(N[i]);
             NrealSum += Nreal[i];
         }
@@ -287,120 +367,6 @@ public class Population implements Cloneable {
     }
 
     /**
-     * Селекция на основе заданной шкалы
-     *
-     * @param n предел
-     * @param scale Массив процентов разделяющих на группы (0.00<x<1.00) для
-     * разбиения на scale.length+1 групп. Т.е. если массив содержит 3 значения.
-     * то это разобьет на 4 группы, где первые 3 получат заданные проценты, а
-     * последняя то что останется 
-     * @param percentage Массив процентов
-     * вероятностей, размер этого массива на 1 больше чем размер scale @return
-     * @return Новая популяция
-     */
-    public Population SelectionByScale(int n, double[] scale, double[] percentage) {
-        double sum = 0;
-        for (double f : scale) {
-            sum += f;
-        }
-        if (sum >= 1) {
-            System.err.println("Ошибка шкалы");
-            return null;
-        }
-        if (scale.length != percentage.length - 1) {
-            System.err.println("Ошибка несоответствия длин массивов шкалы и вероятностей");
-        }
-
-        List newdata = new ArrayList<>();
-
-        List[] groups = new List[scale.length + 1];
-        for (int i = 0; i < groups.length; i++) {
-            groups[i] = new ArrayList<>();
-        }
-
-        this.calculateAllCF();
-
-        //разбиваем на группы
-        for (Chromosome c : this.data) {
-            for (int j = 0; j < scale.length + 1; j++) {
-                double P = 0;
-                int a = j;
-                if (j != scale.length) {
-                    while (a >= 0) {
-                        P += scale[a--];
-                    }
-                } else {
-                    P = 1.0;
-                }
-                if ((c.getCF() + minCF) / (maxCF - minCF) <= P) {
-                    groups[j].add(c);
-                    break;
-                }
-            }
-        }
-
-        for (int i = 0; i < groups.length; i++) {
-            List<Chromosome> l = groups[i];
-            for (Chromosome c : l) {
-                if (newdata.size()<n) {
-                    double rand = Math.random();
-                    if (rand <= percentage[i]) {
-                        newdata.add(c);
-                    }
-                }
-            }
-        }
-
-        return new Population(newdata);
-    }
-
-    /**
-     * Турнирная селекция
-     *
-     * @param limit Максимальное число хромосом в возвращаемой популяции
-     * @return Новая популяция
-     */
-    public Population SelectionTournament(int limit) {
-        List result = new ArrayList(data);
-        
-        //calc all CF
-        calculateAllCF();
-        
-        List newdata;
-                
-        boolean first = true;
-        do{
-            newdata = new ArrayList(result);
-            result.clear();
-        //shuffle            
-        Collections.shuffle(newdata);
-        //init pairs array
-        Chromosome [][] pairs = new Chromosome[newdata.size()/2+newdata.size()%2][2];
-        int i=0;
-        //fill pairs array
-        for (Iterator<Chromosome> it = newdata.iterator(); it.hasNext();i++) {
-            
-            pairs[i][0]=it.next();
-            if(it.hasNext())pairs[i][1]=it.next();
-        }
-        //play CF game in each pair, if in pair there is only one chromosome - its automatically wins
-        for(i=0;i<pairs.length;i++){
-            if(pairs[i][1]==null){
-                result.add(pairs[i][0]);
-            }
-            else{
-                if(pairs[i][0].getCF()>pairs[i][1].getCF())result.add(pairs[i][0]);
-                else result.add(pairs[i][1]);
-            }
-            
-        }
-        if(first)first=false;
-        }while(result.size()>limit);
-        
-        return new Population(result);
-    }
-
-    /**
      * Сортирует популяцию
      *
      * @param byMax Если по возрастанию - true, иначе false
@@ -408,9 +374,9 @@ public class Population implements Cloneable {
     public void Sort(boolean byMax) {
         Comparator c = (Comparator) (Object o1, Object o2) -> {
             int r;
-            if (((Chromosome) o1).FunctionValue() > ((Chromosome) o2).FunctionValue()) {
+            if (((Chromosome) o1).FunctionValue(graph) > ((Chromosome) o2).FunctionValue(graph)) {
                 r = 1;
-            } else if (((Chromosome) o1).FunctionValue() == ((Chromosome) o2).FunctionValue()) {
+            } else if (((Chromosome) o1).FunctionValue(graph) == ((Chromosome) o2).FunctionValue(graph)) {
                 r = 0;
             } else {
                 r = -1;
